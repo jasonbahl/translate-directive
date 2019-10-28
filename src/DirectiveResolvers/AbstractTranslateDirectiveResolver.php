@@ -9,6 +9,11 @@ use PoP\GuzzleHelpers\GuzzleHelpers;
 
 abstract class AbstractTranslateDirectiveResolver extends AbstractDirectiveResolver
 {
+    const DIRECTIVE_NAME = 'translate';
+    public static function getDirectiveName(): string {
+        return self::DIRECTIVE_NAME;
+    }
+
     /**
      * This directive must be executed after ResolveAndMerge, and modify values directly on the returned DB items
      *
