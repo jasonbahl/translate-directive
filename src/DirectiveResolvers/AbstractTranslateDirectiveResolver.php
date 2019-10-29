@@ -1,11 +1,13 @@
 <?php
 namespace PoP\TranslateDirective\DirectiveResolvers;
+use PoP\ComponentModel\Environment;
 use PoP\ComponentModel\GeneralUtils;
+use PoP\GuzzleHelpers\GuzzleHelpers;
+use PoP\Translation\Facades\TranslationAPIFacade;
 use PoP\ComponentModel\FieldResolvers\PipelinePositions;
 use PoP\ComponentModel\FieldResolvers\FieldResolverInterface;
 use PoP\ComponentModel\Facades\Schema\FieldQueryInterpreterFacade;
 use PoP\ComponentModel\DirectiveResolvers\AbstractDirectiveResolver;
-use PoP\GuzzleHelpers\GuzzleHelpers;
 
 abstract class AbstractTranslateDirectiveResolver extends AbstractDirectiveResolver
 {
@@ -28,17 +30,55 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractDirectiveResol
     {
         // Replace all the strings with their translation
         $provider = 'google';
-        $sourceLang = 'en';
-        $targetLang = 'es';
-        $contents = [];
-        // Keep track of which translation must be placed where
-        $translationPositions = [];
-        $counter = 0;
         if ($provider) {
+            // Make sure that there is an endpoint
+            $endpointURL = $this->getEndpoint($provider);
+            if (!$endpointURL) {
+                $removeFieldIfDirectiveFailed = Environment::removeFieldIfDirectiveFailed();
+                $translationAPI = TranslationAPIFacade::getInstance();
+                $directiveName = $this->getDirectiveName();
+                if ($removeFieldIfDirectiveFailed) {
+                    foreach ($idsDataFields as $id => &$data_fields) {
+                        $data_fields['direct'] = [];
+                        $data_fields['conditional'] = [];
+                    }
+                    $schemaErrors[$directiveName][] = sprintf(
+                        $translationAPI->__('Directive \'%s\' with provider \'%s\' doesn\'t have an endpoint URL configured, so it can\'t proceed, and these field(s) have been removed from the query', 'component-model'),
+                        $directiveName,
+                        $provider
+                    );
+                } else {
+                    $schemaWarnings[$directiveName][] = sprintf(
+                        $translationAPI->__('Directive \'%s\' with provider \'%s\' doesn\'t have an endpoint URL configured, so execution of this directive has been ignored on these field(s)', 'component-model'),
+                        $directiveName,
+                        $provider
+                    );
+                }
+                // Nothing else to do
+                return;
+            }
+            // Keep all the translations to be made by pairs of to/from language
+            $contentsBySourceTargetLang = [];
+            // Keep track of which translation must be placed where
+            $translationPositions = [];
             // Collect all the pieces of text to translate
             $fieldQueryInterpreter = FieldQueryInterpreterFacade::getInstance();
             $fieldOutputKeyCache = [];
             foreach ($idsDataFields as $id => $dataFields) {
+                // Extract the from/to language from the params
+                $resultItem = $resultIDItems[$id];
+                list(
+                    $resultItemValidDirective,
+                    $resultItemDirectiveName,
+                    $resultItemDirectiveArgs
+                ) = $this->dissectAndValidateDirectiveForResultItem($fieldResolver, $resultItem, $this->directive, $dbErrors, $dbWarnings);
+                // Check that the directive is valid. If it is not, $dbErrors will have the error already added
+                if (is_null($resultItemValidDirective)) {
+                    continue;
+                }
+                $sourceLang = $resultItemDirectiveArgs['from'];
+                $targetLang = $resultItemDirectiveArgs['to'];
+                $counter = 0;
                 foreach ($dataFields['direct'] as $field) {
                     // Get the fieldOutputKey from the cache, or calculate it
                     if (is_null($fieldOutputKeyCache[$field])) {
@@ -46,39 +86,40 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractDirectiveResol
                     }
                     $fieldOutputKey = $fieldOutputKeyCache[$field];
                     // Add the text to be translated, and keep the position from where it will be retrieved
-                    $contents[] = $dbItems[$id][$fieldOutputKey];
-                    $translationPositions[$id][$fieldOutputKey] = $counter;
+                    $contentsBySourceTargetLang[$sourceLang][$targetLang][] = $dbItems[$id][$fieldOutputKey];
+                    $translationPositions[$sourceLang][$targetLang][$id][$fieldOutputKey] = $counter;
                     $counter++;
                 }
             }
-        }
-        if ($contents) {
-            // Execute the endpoint
-            if ($endpointURL = $this->getEndpoint($provider, $sourceLang, $targetLang, $contents)) {
-                $query = $this->getQuery($provider, $sourceLang, $targetLang, $contents);
-                $response = GuzzleHelpers::requestJSON($endpointURL, $query);
-                if (GeneralUtils::isError($response)) {
-                    return $response;
-                }
-                $translations = $this->extractTranslationsFromResponse($provider, $response);
-                // Iterate through the translations, and replace the original content in the dbItems object
-                foreach ($idsDataFields as $id => $dataFields) {
-                    foreach ($dataFields['direct'] as $field) {
-                        $fieldOutputKey = $fieldOutputKeyCache[$field];
-                        // Add the text to be translated, and keep the position from where it will be retrieved
-                        $position = $translationPositions[$id][$fieldOutputKey];
-                        $dbItems[$id][$fieldOutputKey] = $translations[$position];
+            // Translate all the contents for each pair of from/to languages
+            foreach ($contentsBySourceTargetLang as $sourceLang => $targetLangContents) {
+                foreach ($targetLangContents as $targetLang => $contents) {
+                    // Execute the endpoint
+                    $query = $this->getQuery($provider, $sourceLang, $targetLang, $contents);
+                    $response = GuzzleHelpers::requestJSON($endpointURL, $query);
+                    if (GeneralUtils::isError($response)) {
+                        return $response;
+                    }
+                    $translations = $this->extractTranslationsFromResponse($provider, $response);
+                    // Iterate through the translations, and replace the original content in the dbItems object
+                    foreach ($idsDataFields as $id => $dataFields) {
+                        foreach ($dataFields['direct'] as $field) {
+                            $fieldOutputKey = $fieldOutputKeyCache[$field];
+                            // Add the text to be translated, and keep the position from where it will be retrieved
+                            $position = $translationPositions[$sourceLang][$targetLang][$id][$fieldOutputKey];
+                            $dbItems[$id][$fieldOutputKey] = $translations[$position];
+                        }
                     }
                 }
             }
         }
     }
 
-    protected abstract function getEndpoint(string $provider, string $sourceLang, string $targetLang, array $contents);
+    protected abstract function getEndpoint(string $provider): string;
 
-    protected function getQuery(string $provider, string $sourceLang, string $targetLang, array $contents)
+    protected function getQuery(string $provider, string $sourceLang, string $targetLang, array $contents): array
     {
-        return null;
+        return [];
     }
 
     protected function extractTranslationsFromResponse(string $provider, array $response): array
