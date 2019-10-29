@@ -8,6 +8,7 @@ use PoP\ComponentModel\FieldResolvers\PipelinePositions;
 use PoP\ComponentModel\FieldResolvers\FieldResolverInterface;
 use PoP\ComponentModel\Facades\Schema\FieldQueryInterpreterFacade;
 use PoP\ComponentModel\DirectiveResolvers\AbstractDirectiveResolver;
+use PoP\ComponentModel\Error;
 
 abstract class AbstractTranslateDirectiveResolver extends AbstractDirectiveResolver
 {
@@ -106,11 +107,20 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractDirectiveResol
             // Translate all the contents for each pair of from/to languages
             foreach ($contentsBySourceTargetLang as $sourceLang => $targetLangContents) {
                 foreach ($targetLangContents as $targetLang => $contents) {
-                    // Execute the endpoint
+                    // Get the query to send in the request, and execute against the endpoint
                     $query = $this->getQuery($provider, $sourceLang, $targetLang, $contents);
                     $response = GuzzleHelpers::requestJSON($endpointURL, $query);
+                    // If the request failed, it will throw an Error
                     if (GeneralUtils::isError($response)) {
                         return $response;
+                    }
+                    $response = (array)$response;
+                    // Validate if the response is the translation, or some error from the service provider
+                    if ($errorMessage = $this->getErrorMessageFromResponse($provider, $response)) {
+                        return new Error(
+                            'translation-failed',
+                            $errorMessage
+                        );
                     }
                     $translations = $this->extractTranslationsFromResponse($provider, $response);
                     // Iterate through the translations, and replace the original content in the dbItems object
@@ -132,6 +142,11 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractDirectiveResol
     protected function getQuery(string $provider, string $sourceLang, string $targetLang, array $contents): array
     {
         return [];
+    }
+
+    protected function getErrorMessageFromResponse(string $provider, array $response): ?string
+    {
+        return null;
     }
 
     protected function extractTranslationsFromResponse(string $provider, array $response): array
