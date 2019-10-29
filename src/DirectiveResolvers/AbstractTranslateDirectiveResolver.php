@@ -85,17 +85,17 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractDirectiveResol
                     // Get the query to send in the request, and execute against the endpoint
                     $query = $this->getQuery($provider, $sourceLang, $targetLang, $contents);
                     $response = GuzzleHelpers::requestJSON($endpointURL, $query);
-                    // If the request failed, it will throw an Error
+                    // If the request failed, show an error and do nothing else
                     if (GeneralUtils::isError($response)) {
-                        return $response;
+                        $error = $response;
+                        $this->processFailure($error->getErrorMessage(), [], $idsDataFields, $schemaErrors, $schemaWarnings);
+                        return;
                     }
                     $response = (array)$response;
                     // Validate if the response is the translation, or some error from the service provider
                     if ($errorMessage = $this->getErrorMessageFromResponse($provider, $response)) {
-                        return new Error(
-                            'translation-failed',
-                            $errorMessage
-                        );
+                        $this->processFailure($errorMessage, [], $idsDataFields, $schemaErrors, $schemaWarnings);
+                        return;
                     }
                     $translations = $this->extractTranslationsFromResponse($provider, $response);
                     // Iterate through the translations, and replace the original content in the dbItems object
