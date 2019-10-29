@@ -115,7 +115,7 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractDirectiveResol
         }
     }
 
-    protected abstract function getEndpoint(string $provider): string;
+    protected abstract function getEndpoint(string $provider): ?string;
 
     protected function getQuery(string $provider, string $sourceLang, string $targetLang, array $contents): array
     {
