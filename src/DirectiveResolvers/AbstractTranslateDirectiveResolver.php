@@ -54,7 +54,7 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractDirectiveResol
                         $data_fields['conditional'] = [];
                     }
                     $schemaErrors[$directiveName][] = sprintf(
-                        $translationAPI->__('Directive \'%s\' with provider \'%s\' doesn\'t have an endpoint URL configured, so it can\'t proceed, and field(s) \'%s\' have been removed from the query', 'component-model'),
+                        $translationAPI->__('Directive \'%s\' with provider \'%s\' doesn\'t have an endpoint URL configured, so it can\'t proceed, and field(s) \'%s\' have been removed from the directive pipeline', 'component-model'),
                         $directiveName,
                         $provider,
                         implode($translationAPI->__('\', \''), $fieldNames)
