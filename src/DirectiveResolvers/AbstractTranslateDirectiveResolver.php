@@ -36,38 +36,13 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractDirectiveResol
             // Make sure that there is an endpoint
             $endpointURL = $this->getEndpoint($provider);
             if (!$endpointURL) {
-                $removeFieldIfDirectiveFailed = Environment::removeFieldIfDirectiveFailed();
+                // Give an error message for all failed fields
                 $translationAPI = TranslationAPIFacade::getInstance();
-                $directiveName = $this->getDirectiveName();
-                $fields = array_values(array_unique(array_reduce($idsDataFields, function($merged, $data_fields) {
-                    return array_merge(
-                        $merged,
-                        $data_fields['direct']
-                    );
-                }, [])));
-                $fieldNames = array_map(
-                    [$fieldQueryInterpreter, 'getFieldName'],
-                    $fields
+                $failureMessage = sprintf(
+                    $translationAPI->__('Provider \'%s\' doesn\'t have an endpoint URL configured, so it can\'t proceed to do the translation', 'component-model'),
+                    $provider
                 );
-                if ($removeFieldIfDirectiveFailed) {
-                    foreach ($idsDataFields as $id => &$data_fields) {
-                        $data_fields['direct'] = [];
-                        $data_fields['conditional'] = [];
-                    }
-                    $schemaErrors[$directiveName][] = sprintf(
-                        $translationAPI->__('Directive \'%s\' with provider \'%s\' doesn\'t have an endpoint URL configured, so it can\'t proceed, and field(s) \'%s\' have been removed from the directive pipeline', 'component-model'),
-                        $directiveName,
-                        $provider,
-                        implode($translationAPI->__('\', \''), $fieldNames)
-                    );
-                } else {
-                    $schemaWarnings[$directiveName][] = sprintf(
-                        $translationAPI->__('Directive \'%s\' with provider \'%s\' doesn\'t have an endpoint URL configured, so execution of this directive has been ignored on field(s) \'%s\'', 'component-model'),
-                        $directiveName,
-                        $provider,
-                        implode($translationAPI->__('\', \''), $fieldNames)
-                    );
-                }
+                $this->processFailure($failureMessage, [], $idsDataFields, $schemaErrors, $schemaWarnings);
                 // Nothing else to do
                 return;
             }
