@@ -31,27 +31,40 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractDirectiveResol
         // Replace all the strings with their translation
         $provider = 'google';
         if ($provider) {
+            $fieldQueryInterpreter = FieldQueryInterpreterFacade::getInstance();
             // Make sure that there is an endpoint
             $endpointURL = $this->getEndpoint($provider);
             if (!$endpointURL) {
                 $removeFieldIfDirectiveFailed = Environment::removeFieldIfDirectiveFailed();
                 $translationAPI = TranslationAPIFacade::getInstance();
                 $directiveName = $this->getDirectiveName();
+                $fields = array_values(array_unique(array_reduce($idsDataFields, function($merged, $data_fields) {
+                    return array_merge(
+                        $merged,
+                        $data_fields['direct']
+                    );
+                }, [])));
+                $fieldNames = array_map(
+                    [$fieldQueryInterpreter, 'getFieldName'],
+                    $fields
+                );
                 if ($removeFieldIfDirectiveFailed) {
                     foreach ($idsDataFields as $id => &$data_fields) {
                         $data_fields['direct'] = [];
                         $data_fields['conditional'] = [];
                     }
                     $schemaErrors[$directiveName][] = sprintf(
-                        $translationAPI->__('Directive \'%s\' with provider \'%s\' doesn\'t have an endpoint URL configured, so it can\'t proceed, and these field(s) have been removed from the query', 'component-model'),
+                        $translationAPI->__('Directive \'%s\' with provider \'%s\' doesn\'t have an endpoint URL configured, so it can\'t proceed, and field(s) \'%s\' have been removed from the query', 'component-model'),
                         $directiveName,
-                        $provider
+                        $provider,
+                        implode($translationAPI->__('\', \''), $fieldNames)
                     );
                 } else {
                     $schemaWarnings[$directiveName][] = sprintf(
-                        $translationAPI->__('Directive \'%s\' with provider \'%s\' doesn\'t have an endpoint URL configured, so execution of this directive has been ignored on these field(s)', 'component-model'),
+                        $translationAPI->__('Directive \'%s\' with provider \'%s\' doesn\'t have an endpoint URL configured, so execution of this directive has been ignored on field(s) \'%s\'', 'component-model'),
                         $directiveName,
-                        $provider
+                        $provider,
+                        implode($translationAPI->__('\', \''), $fieldNames)
                     );
                 }
                 // Nothing else to do
@@ -62,7 +75,6 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractDirectiveResol
             // Keep track of which translation must be placed where
             $translationPositions = [];
             // Collect all the pieces of text to translate
-            $fieldQueryInterpreter = FieldQueryInterpreterFacade::getInstance();
             $fieldOutputKeyCache = [];
             foreach ($idsDataFields as $id => $dataFields) {
                 // Extract the from/to language from the params
