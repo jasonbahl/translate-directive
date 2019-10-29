@@ -33,11 +33,11 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractDirectiveResol
         $provider = 'google';
         if ($provider) {
             $fieldQueryInterpreter = FieldQueryInterpreterFacade::getInstance();
+            $translationAPI = TranslationAPIFacade::getInstance();
             // Make sure that there is an endpoint
             $endpointURL = $this->getEndpoint($provider);
             if (!$endpointURL) {
                 // Give an error message for all failed fields
-                $translationAPI = TranslationAPIFacade::getInstance();
                 $failureMessage = sprintf(
                     $translationAPI->__('Provider \'%s\' doesn\'t have an endpoint URL configured, so it can\'t proceed to do the translation', 'component-model'),
                     $provider
@@ -88,13 +88,21 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractDirectiveResol
                     // If the request failed, show an error and do nothing else
                     if (GeneralUtils::isError($response)) {
                         $error = $response;
-                        $this->processFailure($error->getErrorMessage(), [], $idsDataFields, $schemaErrors, $schemaWarnings);
+                        $failureMessage = sprintf(
+                            $translationAPI->__('There was an error requesting data from the Provider API: %s', 'component-model'),
+                            $error->getErrorMessage()
+                        );
+                        $this->processFailure($failureMessage, [], $idsDataFields, $schemaErrors, $schemaWarnings);
                         return;
                     }
                     $response = (array)$response;
                     // Validate if the response is the translation, or some error from the service provider
                     if ($errorMessage = $this->getErrorMessageFromResponse($provider, $response)) {
-                        $this->processFailure($errorMessage, [], $idsDataFields, $schemaErrors, $schemaWarnings);
+                        $failureMessage = sprintf(
+                            $translationAPI->__('There was an error processing the response from the Provider API: %s', 'component-model'),
+                            $errorMessage
+                        );
+                        $this->processFailure($failureMessage, [], $idsDataFields, $schemaErrors, $schemaWarnings);
                         return;
                     }
                     $translations = $this->extractTranslationsFromResponse($provider, $response);
