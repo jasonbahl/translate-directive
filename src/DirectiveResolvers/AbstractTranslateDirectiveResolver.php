@@ -52,7 +52,7 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractDirectiveResol
             $translationPositions = [];
             // Collect all the pieces of text to translate
             $fieldOutputKeyCache = [];
-            $counter = 0;
+            $counters = [];
             foreach ($idsDataFields as $id => $dataFields) {
                 // Extract the from/to language from the params
                 $resultItem = $resultIDItems[$id];
@@ -67,6 +67,9 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractDirectiveResol
                 }
                 $sourceLang = $resultItemDirectiveArgs['from'];
                 $targetLang = $resultItemDirectiveArgs['to'];
+                if (!isset($counters[$sourceLang][$targetLang])) {
+                    $counters[$sourceLang][$targetLang] = 0;
+                }
                 foreach ($dataFields['direct'] as $field) {
                     // Get the fieldOutputKey from the cache, or calculate it
                     if (is_null($fieldOutputKeyCache[$field])) {
@@ -75,8 +78,8 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractDirectiveResol
                     $fieldOutputKey = $fieldOutputKeyCache[$field];
                     // Add the text to be translated, and keep the position from where it will be retrieved
                     $contentsBySourceTargetLang[$sourceLang][$targetLang][] = $dbItems[$id][$fieldOutputKey];
-                    $translationPositions[$sourceLang][$targetLang][$id][$fieldOutputKey] = $counter;
-                    $counter++;
+                    $translationPositions[$sourceLang][$targetLang][$id][$fieldOutputKey] = $counters[$sourceLang][$targetLang];
+                    $counters[$sourceLang][$targetLang]++;
                 }
             }
             // Translate all the contents for each pair of from/to languages
@@ -107,11 +110,8 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractDirectiveResol
                     }
                     $translations = $this->extractTranslationsFromResponse($provider, $response);
                     // Iterate through the translations, and replace the original content in the dbItems object
-                    foreach ($idsDataFields as $id => $dataFields) {
-                        foreach ($dataFields['direct'] as $field) {
-                            $fieldOutputKey = $fieldOutputKeyCache[$field];
-                            // Add the text to be translated, and keep the position from where it will be retrieved
-                            $position = $translationPositions[$sourceLang][$targetLang][$id][$fieldOutputKey];
+                    foreach ($translationPositions[$sourceLang][$targetLang] as $id => $fieldOutputKeyPosition) {
+                        foreach ($fieldOutputKeyPosition as $fieldOutputKey => $position) {
                             $dbItems[$id][$fieldOutputKey] = $translations[$position];
                         }
                     }
