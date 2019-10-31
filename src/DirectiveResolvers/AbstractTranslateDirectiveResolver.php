@@ -3,6 +3,7 @@ namespace PoP\TranslateDirective\DirectiveResolvers;
 
 use PoP\ComponentModel\GeneralUtils;
 use PoP\GuzzleHelpers\GuzzleHelpers;
+use PoP\ComponentModel\Schema\SchemaDefinition;
 use PoP\Translation\Facades\TranslationAPIFacade;
 use PoP\ComponentModel\FieldResolvers\PipelinePositions;
 use PoP\ComponentModel\FieldResolvers\FieldResolverInterface;
@@ -24,6 +25,16 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
     public function getPipelinePosition(): string
     {
         return PipelinePositions::BACK;
+    }
+
+    /**
+     * If not passing a provider in the directive, use the default one instead
+     *
+     * @return void
+     */
+    public function getDefaultProvider(): ?string
+    {
+        return null;
     }
 
     public function resolveDirective(FieldResolverInterface $fieldResolver, array &$resultIDItems, array &$idsDataFields, array &$dbItems, array &$dbErrors, array &$dbWarnings, array &$schemaErrors, array &$schemaWarnings, array &$schemaDeprecations)
@@ -134,5 +145,33 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
     protected function extractTranslationsFromResponse(string $provider, array $response): array
     {
         return $response;
+    }
+    public function getSchemaDirectiveDescription(FieldResolverInterface $fieldResolver): ?string
+    {
+        $translationAPI = TranslationAPIFacade::getInstance();
+        return $translationAPI->__('Translate a string using the API from some provider', 'translate-directive');
+    }
+    public function getSchemaDirectiveArgs(FieldResolverInterface $fieldResolver): array
+    {
+        $translationAPI = TranslationAPIFacade::getInstance();
+        return [
+            [
+                SchemaDefinition::ARGNAME_NAME => 'provider',
+                SchemaDefinition::ARGNAME_TYPE => SchemaDefinition::TYPE_STRING,
+                SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('The name of the provider whose API to use for the translation. If this value is not provided, a default provider will be used', 'translate-directive'),
+            ],
+            [
+                SchemaDefinition::ARGNAME_NAME => 'from',
+                SchemaDefinition::ARGNAME_TYPE => SchemaDefinition::TYPE_STRING,
+                SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('Source language code, corresponding to the provider\'s specifications', 'translate-directive'),
+                SchemaDefinition::ARGNAME_MANDATORY => true,
+            ],
+            [
+                SchemaDefinition::ARGNAME_NAME => 'to',
+                SchemaDefinition::ARGNAME_TYPE => SchemaDefinition::TYPE_STRING,
+                SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('Target language code, corresponding to the provider\'s specifications', 'translate-directive'),
+                SchemaDefinition::ARGNAME_MANDATORY => true,
+            ],
+        ];
     }
 }
