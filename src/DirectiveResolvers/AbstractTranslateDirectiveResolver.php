@@ -3,7 +3,7 @@ namespace PoP\TranslateDirective\DirectiveResolvers;
 
 use PoP\ComponentModel\GeneralUtils;
 use PoP\GuzzleHelpers\GuzzleHelpers;
-use PoP\ComponentModel\Schema\SchemaDefinition;
+use PoP\TranslateDirective\Schema\SchemaDefinition;
 use PoP\Translation\Facades\TranslationAPIFacade;
 use PoP\ComponentModel\FieldResolvers\PipelinePositions;
 use PoP\ComponentModel\FieldResolvers\FieldResolverInterface;
@@ -33,6 +33,20 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
      * @return array
      */
     public abstract function getProvidersToResolve(): array;
+
+    /**
+     * Only process the directive if this directiveResolver can handle the provider
+     *
+     * @param FieldResolverInterface $fieldResolver
+     * @param string $directiveName
+     * @param array $directiveArgs
+     * @return boolean
+     */
+    public function resolveCanProcess(FieldResolverInterface $fieldResolver, string $directiveName, array $directiveArgs = []): bool
+    {
+        $provider = $directiveArgs['provider'];
+        return in_array($provider, $this->getProvidersToResolve());
+    }
 
     public function resolveDirective(FieldResolverInterface $fieldResolver, array &$resultIDItems, array &$idsDataFields, array &$dbItems, array &$dbErrors, array &$dbWarnings, array &$schemaErrors, array &$schemaWarnings, array &$schemaDeprecations)
     {
@@ -175,5 +189,14 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
                 SchemaDefinition::ARGNAME_MANDATORY => true,
             ],
         ];
+    }
+
+    /**
+     * Function to override
+     */
+    protected function addSchemaDefinitionForDirective(array &$schemaDefinition)
+    {
+        // Further add for which providers it works
+        $schemaDefinition[SchemaDefinition::ARGNAME_FOR_PROVIDERS] = $this->getProvidersToResolve();
     }
 }
