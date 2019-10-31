@@ -52,6 +52,7 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractDirectiveResol
             $translationPositions = [];
             // Collect all the pieces of text to translate
             $fieldOutputKeyCache = [];
+            $counter = 0;
             foreach ($idsDataFields as $id => $dataFields) {
                 // Extract the from/to language from the params
                 $resultItem = $resultIDItems[$id];
@@ -66,7 +67,6 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractDirectiveResol
                 }
                 $sourceLang = $resultItemDirectiveArgs['from'];
                 $targetLang = $resultItemDirectiveArgs['to'];
-                $counter = 0;
                 foreach ($dataFields['direct'] as $field) {
                     // Get the fieldOutputKey from the cache, or calculate it
                     if (is_null($fieldOutputKeyCache[$field])) {
