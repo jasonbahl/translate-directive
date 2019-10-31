@@ -7,9 +7,9 @@ use PoP\Translation\Facades\TranslationAPIFacade;
 use PoP\ComponentModel\FieldResolvers\PipelinePositions;
 use PoP\ComponentModel\FieldResolvers\FieldResolverInterface;
 use PoP\ComponentModel\Facades\Schema\FieldQueryInterpreterFacade;
-use PoP\ComponentModel\DirectiveResolvers\AbstractDirectiveResolver;
+use PoP\ComponentModel\DirectiveResolvers\AbstractSchemaDirectiveResolver;
 
-abstract class AbstractTranslateDirectiveResolver extends AbstractDirectiveResolver
+abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiveResolver
 {
     const DIRECTIVE_NAME = 'translate';
     public static function getDirectiveName(): string {
