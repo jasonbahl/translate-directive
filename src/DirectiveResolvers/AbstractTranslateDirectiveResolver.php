@@ -3,9 +3,10 @@ namespace PoP\TranslateDirective\DirectiveResolvers;
 
 use PoP\ComponentModel\GeneralUtils;
 use PoP\GuzzleHelpers\GuzzleHelpers;
-use PoP\TranslateDirective\Schema\SchemaDefinition;
 use PoP\Translation\Facades\TranslationAPIFacade;
+use PoP\TranslateDirective\Schema\SchemaDefinition;
 use PoP\ComponentModel\FieldResolvers\PipelinePositions;
+use PoP\TranslateDirective\Facades\TranslationServiceFacade;
 use PoP\ComponentModel\FieldResolvers\FieldResolverInterface;
 use PoP\ComponentModel\Facades\Schema\FieldQueryInterpreterFacade;
 use PoP\ComponentModel\DirectiveResolvers\AbstractSchemaDirectiveResolver;
@@ -45,6 +46,22 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
     public abstract function getProvidersToResolve(): array;
 
     /**
+     * If the provider is indicated through $directiveArgs, use it
+     * Otherwise, use the default one, if set
+     *
+     * @param array $directiveArgs
+     * @return void
+     */
+    protected function getProvider(array $directiveArgs): ?string
+    {
+        if (isset($directiveArgs['provider'])) {
+            return $directiveArgs['provider'];
+        }
+        $translationService = TranslationServiceFacade::getInstance();
+        return $translationService->getDefaultProvider();
+    }
+
+    /**
      * Only process the directive if this directiveResolver can handle the provider
      *
      * @param FieldResolverInterface $fieldResolver
@@ -54,7 +71,7 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
      */
     public function resolveCanProcess(FieldResolverInterface $fieldResolver, string $directiveName, array $directiveArgs = []): bool
     {
-        $provider = $directiveArgs['provider'];
+        $provider = $this->getProvider($directiveArgs);
         return in_array($provider, $this->getProvidersToResolve());
     }
 
@@ -65,7 +82,7 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
 
         // Retrieve the provider from the directiveArgs. The provider is passed as a 'static' attribute (to decide the DirectiveResolver), so it can't be taken from the resultItem schema (as is the case with the from/to lang params)
         $directiveArgs = $fieldQueryInterpreter->extractStaticDirectiveArguments($this->directive);
-        $provider = $directiveArgs['provider'];
+        $provider = $this->getProvider($directiveArgs);
         // Make sure that there is an endpoint
         $endpointURL = $this->getEndpoint($provider);
         if (!$endpointURL) {
