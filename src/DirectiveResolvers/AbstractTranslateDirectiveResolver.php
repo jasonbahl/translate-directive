@@ -141,6 +141,17 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
         }
         // Send all the queries for all languages all concurrently and asynchronously
         $responses = GuzzleHelpers::requestAsyncJSON($endpointURL, $queries);
+        // If the request failed, show an error and do nothing else
+        if (GeneralUtils::isError($responses)) {
+            $error = $responses;
+            $failureMessage = sprintf(
+                $translationAPI->__('There was an error requesting data from the Provider API: %s', 'component-model'),
+                $error->getErrorMessage()
+            );
+            $this->processFailure($failureMessage, [], $idsDataFields, $schemaErrors, $schemaWarnings);
+            return;
+        }
+
         // Iterate through all the responses
         $counter = 0;
         foreach ($contentsBySourceTargetLang as $sourceLang => $targetLangContents) {
