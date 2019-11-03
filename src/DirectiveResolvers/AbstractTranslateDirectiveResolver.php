@@ -133,11 +133,21 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
             }
         }
         // Translate all the contents for each pair of from/to languages
+        $queries = [];
         foreach ($contentsBySourceTargetLang as $sourceLang => $targetLangContents) {
             foreach ($targetLangContents as $targetLang => $contents) {
-                // Get the query to send in the request, and execute against the endpoint
-                $query = $this->getQuery($provider, $sourceLang, $targetLang, $contents);
-                $response = GuzzleHelpers::requestJSON($endpointURL, $query);
+                $queries[] = $this->getQuery($provider, $sourceLang, $targetLang, $contents);
+            }
+        }
+        // Send all the queries for all languages all concurrently and asynchronously
+        $responses = GuzzleHelpers::requestAsyncJSON($endpointURL, $queries);
+        // Iterate through all the responses
+        $counter = 0;
+        foreach ($contentsBySourceTargetLang as $sourceLang => $targetLangContents) {
+            foreach ($targetLangContents as $targetLang => $contents) {
+                $response = $responses[$counter];
+                $counter++;
+
                 // If the request failed, show an error and do nothing else
                 if (GeneralUtils::isError($response)) {
                     $error = $response;
