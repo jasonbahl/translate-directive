@@ -53,12 +53,8 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
         $fieldQueryInterpreter = FieldQueryInterpreterFacade::getInstance();
         $translationAPI = TranslationAPIFacade::getInstance();
 
-        // Retrieve the provider from the directiveArgs. All results must have the same provider, that's why it's taken from schema, and not from resultItem (as the from/to langs)
-        list(
-            $directive,
-            $directiveName,
-            $directiveArgs
-        ) = $fieldQueryInterpreter->extractDirectiveArgumentsForSchema($this, $fieldResolver, $this->directive);
+        // Retrieve the provider from the directiveArgs. The provider is passed as a 'static' attribute (to decide the DirectiveResolver), so it can't be taken from the resultItem schema (as is the case with the from/to lang params)
+        $directiveArgs = $fieldQueryInterpreter->extractStaticDirectiveArguments($this->directive);
         $provider = $directiveArgs['provider'];
         // Make sure that there is an endpoint
         $endpointURL = $this->getEndpoint($provider);
