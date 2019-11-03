@@ -172,11 +172,6 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
         $translationAPI = TranslationAPIFacade::getInstance();
         return [
             [
-                SchemaDefinition::ARGNAME_NAME => 'provider',
-                SchemaDefinition::ARGNAME_TYPE => SchemaDefinition::TYPE_STRING,
-                SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('The name of the provider whose API to use for the translation. If this value is not provided, a default provider will be used', 'translate-directive'),
-            ],
-            [
                 SchemaDefinition::ARGNAME_NAME => 'from',
                 SchemaDefinition::ARGNAME_TYPE => SchemaDefinition::TYPE_STRING,
                 SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('Source language code, corresponding to the provider\'s specifications', 'translate-directive'),
@@ -187,6 +182,11 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
                 SchemaDefinition::ARGNAME_TYPE => SchemaDefinition::TYPE_STRING,
                 SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('Target language code, corresponding to the provider\'s specifications', 'translate-directive'),
                 SchemaDefinition::ARGNAME_MANDATORY => true,
+            ],
+            [
+                SchemaDefinition::ARGNAME_NAME => 'provider',
+                SchemaDefinition::ARGNAME_TYPE => SchemaDefinition::TYPE_STRING,
+                SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('The name of the provider whose API to use for the translation. If this value is not provided, a default provider will be used', 'translate-directive'),
             ],
         ];
     }
