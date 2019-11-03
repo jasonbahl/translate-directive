@@ -27,6 +27,16 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
         return PipelinePositions::BACK;
     }
 
+    /**
+     * Allow to translate from the translation
+     *
+     * @return boolean
+     */
+    public function canExecuteMultipleTimesInField(): bool
+    {
+        return true;
+    }
+
         /**
      * The name of the API's provider
      *
