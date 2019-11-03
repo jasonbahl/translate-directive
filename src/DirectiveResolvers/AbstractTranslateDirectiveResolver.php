@@ -58,7 +58,7 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
             $directive,
             $directiveName,
             $directiveArgs
-        ) = $fieldQueryInterpreter->extractDirectiveArgumentsForSchema($fieldResolver, $this->directive);
+        ) = $fieldQueryInterpreter->extractDirectiveArgumentsForSchema($this, $fieldResolver, $this->directive);
         $provider = $directiveArgs['provider'];
         // Make sure that there is an endpoint
         $endpointURL = $this->getEndpoint($provider);
