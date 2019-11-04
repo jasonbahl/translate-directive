@@ -194,13 +194,13 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
                         foreach ($fieldOutputKeyPosition as $fieldOutputKey => $position) {
                             if ($removeFieldIfDirectiveFailed) {
                                 $dbErrors[(string)$id][$this->directive][] = sprintf(
-                                    $translationAPI->__('Property \'%s\' for object with ID \'%s\' has not been translated (see previous errors to find the reason why)', 'component-model'),
+                                    $translationAPI->__('Due to some previous error, this directive has not been executed on property \'%s\' for object with ID \'%s\'', 'component-model'),
                                     $fieldOutputKey,
                                     $id
                                 );
                             } else {
                                 $dbWarnings[(string)$id][$this->directive][] = sprintf(
-                                    $translationAPI->__('Property \'%s\' for object with ID \'%s\' has not been translated (see previous warnings to find the reason why)', 'component-model'),
+                                    $translationAPI->__('Due to some previous warning, property \'%s\' for object with ID \'%s\' has not been translated', 'component-model'),
                                     $fieldOutputKey,
                                     $id
                                 );
