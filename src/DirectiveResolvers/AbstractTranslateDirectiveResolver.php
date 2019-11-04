@@ -3,6 +3,7 @@ namespace PoP\TranslateDirective\DirectiveResolvers;
 
 use PoP\ComponentModel\GeneralUtils;
 use PoP\GuzzleHelpers\GuzzleHelpers;
+use PoP\TranslateDirective\Environment;
 use PoP\Translation\Facades\TranslationAPIFacade;
 use PoP\TranslateDirective\Schema\SchemaDefinition;
 use PoP\ComponentModel\FieldResolvers\PipelinePositions;
@@ -10,6 +11,7 @@ use PoP\TranslateDirective\Facades\TranslationServiceFacade;
 use PoP\ComponentModel\FieldResolvers\FieldResolverInterface;
 use PoP\ComponentModel\Facades\Schema\FieldQueryInterpreterFacade;
 use PoP\ComponentModel\DirectiveResolvers\AbstractSchemaDirectiveResolver;
+use PoP\ComponentModel\Environment as ComponentModelEnvironment;
 
 abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiveResolver
 {
@@ -133,32 +135,38 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
             }
         }
         // Translate all the contents for each pair of from/to languages
+        // For instance, this query will translate between 3 pairs: EN to ES, EN to FR, and EN to DE:
+        // --> ?query=posts.id|title|title@random<translate(en,arrayRandom([es,fr,de]))>
         $queries = [];
         foreach ($contentsBySourceTargetLang as $sourceLang => $targetLangContents) {
             foreach ($targetLangContents as $targetLang => $contents) {
                 $queries[] = $this->getQuery($provider, $sourceLang, $targetLang, $contents);
             }
         }
-        // Send all the queries for all languages all concurrently and asynchronously
-        $responses = GuzzleHelpers::requestAsyncJSON($endpointURL, $queries);
-        // If the request failed, show an error and do nothing else
-        if (GeneralUtils::isError($responses)) {
-            $error = $responses;
-            $failureMessage = sprintf(
-                $translationAPI->__('There was an error requesting data from the Provider API: %s', 'component-model'),
-                $error->getErrorMessage()
-            );
-            $this->processFailure($failureMessage, [], $idsDataFields, $schemaErrors, $schemaWarnings);
-            return;
-        }
-
-        // Iterate through all the responses
-        $counter = 0;
-        foreach ($contentsBySourceTargetLang as $sourceLang => $targetLangContents) {
-            foreach ($targetLangContents as $targetLang => $contents) {
-                $response = $responses[$counter];
-                $counter++;
-
+        // There are 2 ways to fetch the data when there are many languages:
+        // Synchronously and Asynchronously
+        // 1. Synchronously
+        // --> Slower: it waits for one translation to be fetched before dispatching a new one
+        // --> Resilient: if any translation fails (eg: the language code is wrong), it doesn't affect the translation for all other languages
+        // 2. Asynchronously:
+        // --> Faster: all translations are dispatched concurrently to the API
+        // --> Fragile: if the translation for a single pair of languages fails, then the translation for all pairs fail!
+        if (Environment::useAsyncForMultiLanguageTranslation()) {
+            // Send all the queries for all languages all concurrently and asynchronously
+            $responses = GuzzleHelpers::requestAsyncJSON($endpointURL, $queries);
+            // If the request failed, show an error and do nothing else
+            if (GeneralUtils::isError($responses)) {
+                $error = $responses;
+                $failureMessage = sprintf(
+                    $translationAPI->__('There was an error requesting data from the Provider API: %s', 'component-model'),
+                    $error->getErrorMessage()
+                );
+                $this->processFailure($failureMessage, [], $idsDataFields, $schemaErrors, $schemaWarnings);
+                return;
+            }
+        } else {
+            foreach ($queries as $query) {
+                $response = GuzzleHelpers::requestJSON($endpointURL, $query);
                 // If the request failed, show an error and do nothing else
                 if (GeneralUtils::isError($response)) {
                     $error = $response;
@@ -167,9 +175,42 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
                         $error->getErrorMessage()
                     );
                     $this->processFailure($failureMessage, [], $idsDataFields, $schemaErrors, $schemaWarnings);
-                    return;
+                }
+                $responses[] = $response;
+            }
+        }
+
+        // Iterate through all the responses
+        $removeFieldIfDirectiveFailed = ComponentModelEnvironment::removeFieldIfDirectiveFailed();
+        $counter = 0;
+        foreach ($contentsBySourceTargetLang as $sourceLang => $targetLangContents) {
+            foreach ($targetLangContents as $targetLang => $contents) {
+                $response = $responses[$counter];
+                $counter++;
+                // If any synchronous request failed, this response will be an error. Skip it (error message already added)
+                if (GeneralUtils::isError($response)) {
+                    // Add a DB error for all the invoved dbItems
+                    foreach ($translationPositions[$sourceLang][$targetLang] as $id => $fieldOutputKeyPosition) {
+                        foreach ($fieldOutputKeyPosition as $fieldOutputKey => $position) {
+                            if ($removeFieldIfDirectiveFailed) {
+                                $dbErrors[(string)$id][$this->directive][] = sprintf(
+                                    $translationAPI->__('Property \'%s\' for object with ID \'%s\' has not been translated (see previous errors to find the reason why)', 'component-model'),
+                                    $fieldOutputKey,
+                                    $id
+                                );
+                            } else {
+                                $dbWarnings[(string)$id][$this->directive][] = sprintf(
+                                    $translationAPI->__('Property \'%s\' for object with ID \'%s\' has not been translated (see previous warnings to find the reason why)', 'component-model'),
+                                    $fieldOutputKey,
+                                    $id
+                                );
+                            }
+                        }
+                    }
+                    continue;
                 }
                 $response = (array)$response;
+
                 // Validate if the response is the translation, or some error from the service provider
                 if ($errorMessage = $this->getErrorMessageFromResponse($provider, $response)) {
                     $failureMessage = sprintf(
@@ -177,7 +218,7 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
                         $errorMessage
                     );
                     $this->processFailure($failureMessage, [], $idsDataFields, $schemaErrors, $schemaWarnings);
-                    return;
+                    continue;
                 }
                 $translations = $this->extractTranslationsFromResponse($provider, $response);
                 // Iterate through the translations, and replace the original content in the dbItems object
