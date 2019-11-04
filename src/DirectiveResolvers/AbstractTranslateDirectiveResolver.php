@@ -1,6 +1,7 @@
 <?php
 namespace PoP\TranslateDirective\DirectiveResolvers;
 
+use PoP\ComponentModel\Error;
 use PoP\ComponentModel\GeneralUtils;
 use PoP\GuzzleHelpers\GuzzleHelpers;
 use PoP\TranslateDirective\Environment;
@@ -9,9 +10,9 @@ use PoP\TranslateDirective\Schema\SchemaDefinition;
 use PoP\ComponentModel\FieldResolvers\PipelinePositions;
 use PoP\TranslateDirective\Facades\TranslationServiceFacade;
 use PoP\ComponentModel\FieldResolvers\FieldResolverInterface;
+use PoP\ComponentModel\Environment as ComponentModelEnvironment;
 use PoP\ComponentModel\Facades\Schema\FieldQueryInterpreterFacade;
 use PoP\ComponentModel\DirectiveResolvers\AbstractSchemaDirectiveResolver;
-use PoP\ComponentModel\Environment as ComponentModelEnvironment;
 
 abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiveResolver
 {
@@ -156,11 +157,7 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
             $responses = GuzzleHelpers::requestAsyncJSON($endpointURL, $queries);
             // If the request failed, show an error and do nothing else
             if (GeneralUtils::isError($responses)) {
-                $error = $responses;
-                $failureMessage = sprintf(
-                    $translationAPI->__('There was an error requesting data from the Provider API: %s', 'component-model'),
-                    $error->getErrorMessage()
-                );
+                $failureMessage = $this->getClientFailureMessage($responses, $provider);
                 $this->processFailure($failureMessage, [], $idsDataFields, $schemaErrors, $schemaWarnings);
                 return;
             }
@@ -169,11 +166,7 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
                 $response = GuzzleHelpers::requestJSON($endpointURL, $query);
                 // If the request failed, show an error and do nothing else
                 if (GeneralUtils::isError($response)) {
-                    $error = $response;
-                    $failureMessage = sprintf(
-                        $translationAPI->__('There was an error requesting data from the Provider API: %s', 'component-model'),
-                        $error->getErrorMessage()
-                    );
+                    $failureMessage = $this->getClientFailureMessage($response, $provider);
                     $this->processFailure($failureMessage, [], $idsDataFields, $schemaErrors, $schemaWarnings);
                 }
                 $responses[] = $response;
@@ -229,6 +222,22 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
                 }
             }
         }
+    }
+
+    /**
+     * Failure message to show the user, originated from Guzzle client's error
+     *
+     * @param Error $error
+     * @param string $provider
+     * @return void
+     */
+    protected function getClientFailureMessage(Error $error, string $provider): string
+    {
+        $translationAPI = TranslationAPIFacade::getInstance();
+        return sprintf(
+            $translationAPI->__('There was an error requesting data from the Provider API: %s', 'component-model'),
+            $error->getErrorMessage()
+        );
     }
 
     protected abstract function getEndpoint(string $provider): ?string;
