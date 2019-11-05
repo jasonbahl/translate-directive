@@ -114,7 +114,7 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
                 $resultItemValidDirective,
                 $resultItemDirectiveName,
                 $resultItemDirectiveArgs
-            ) = $this->dissectAndValidateDirectiveForResultItem($fieldResolver, $resultItem, $dbErrors, $dbWarnings);
+            ) = $this->dissectAndValidateDirectiveForResultItem($fieldResolver, $resultItem, $dbErrors, $dbWarnings, $variables);
             // Check that the directive is valid. If it is not, $dbErrors will have the error already added
             if (is_null($resultItemValidDirective)) {
                 continue;
