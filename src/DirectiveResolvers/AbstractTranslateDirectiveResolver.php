@@ -105,7 +105,6 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
         // Collect all the pieces of text to translate
         $fieldOutputKeyCache = [];
         $counters = [];
-        $override = $this->directiveArgsForSchema['override'] ?? true;
         foreach ($idsDataFields as $id => $dataFields) {
             // Extract the from/to language from the params. Each pair of from/to languages can be set on a result-by-result basis,
             // that's why it's taken from resultItem and not from schema (as the provider is)
@@ -121,20 +120,43 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
                 continue;
             }
             $sourceLang = $resultItemDirectiveArgs['from'];
-            $targetLang = $resultItemDirectiveArgs['to'];
-            if (!isset($counters[$sourceLang][$targetLang])) {
-                $counters[$sourceLang][$targetLang] = 0;
-            }
-            foreach ($dataFields['direct'] as $field) {
-                // Get the fieldOutputKey from the cache, or calculate it
-                if (is_null($fieldOutputKeyCache[$field])) {
-                    $fieldOutputKeyCache[$field] = $fieldQueryInterpreter->getFieldOutputKey($field);
+            // Translate to either 1 or more languages: arg 'to' can either be a string or an array
+            $targetLangs = $resultItemDirectiveArgs['to'];
+            if (is_array($targetLangs)) {
+                // Validate it is not empty
+                if (empty($targetLangs)) {
+                    $dbErrors[(string)$id][$this->directive][] = sprintf(
+                        $translationAPI->__('The target language for object with ID \'%s\' is missing, so can\'t continue', 'component-model'),
+                        $id
+                    );
+                    continue;
                 }
-                $fieldOutputKey = $fieldOutputKeyCache[$field];
-                // Add the text to be translated, and keep the position from where it will be retrieved
-                $contentsBySourceTargetLang[$sourceLang][$targetLang][] = $dbItems[$id][$fieldOutputKey];
-                $translationPositions[$sourceLang][$targetLang][$id][$fieldOutputKey] = $counters[$sourceLang][$targetLang];
-                $counters[$sourceLang][$targetLang]++;
+            } else {
+                $targetLangs = [$targetLangs];
+            }
+            // If translating to many languages, can't override
+            if (count($targetLangs) > 1) {
+                $override = false;
+            } else {
+                // For one language, get value from arg, or true by default
+                $override = $this->directiveArgsForSchema['override'] ?? true;
+            }
+
+            foreach ($targetLangs as $targetLang) {
+                if (!isset($counters[$sourceLang][$targetLang])) {
+                    $counters[$sourceLang][$targetLang] = 0;
+                }
+                foreach ($dataFields['direct'] as $field) {
+                    // Get the fieldOutputKey from the cache, or calculate it
+                    if (is_null($fieldOutputKeyCache[$field])) {
+                        $fieldOutputKeyCache[$field] = $fieldQueryInterpreter->getFieldOutputKey($field);
+                    }
+                    $fieldOutputKey = $fieldOutputKeyCache[$field];
+                    // Add the text to be translated, and keep the position from where it will be retrieved
+                    $contentsBySourceTargetLang[$sourceLang][$targetLang][] = $dbItems[$id][$fieldOutputKey];
+                    $translationPositions[$sourceLang][$targetLang][$id][$fieldOutputKey] = $counters[$sourceLang][$targetLang];
+                    $counters[$sourceLang][$targetLang]++;
+                }
             }
         }
         // Translate all the contents for each pair of from/to languages
@@ -275,13 +297,13 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
             [
                 SchemaDefinition::ARGNAME_NAME => 'from',
                 SchemaDefinition::ARGNAME_TYPE => SchemaDefinition::TYPE_STRING,
-                SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('Source language code, corresponding to the provider\'s specifications', 'translate-directive'),
+                SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('Source language code', 'translate-directive'),
                 SchemaDefinition::ARGNAME_MANDATORY => true,
             ],
             [
                 SchemaDefinition::ARGNAME_NAME => 'to',
-                SchemaDefinition::ARGNAME_TYPE => SchemaDefinition::TYPE_STRING,
-                SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('Target language code, corresponding to the provider\'s specifications', 'translate-directive'),
+                SchemaDefinition::ARGNAME_TYPE => SchemaDefinition::TYPE_MIXED,
+                SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('Target language code (as a string) or codes (as an array) to translate to multiple languages', 'translate-directive'),
                 SchemaDefinition::ARGNAME_MANDATORY => true,
             ],
             [
@@ -292,7 +314,7 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
             [
                 SchemaDefinition::ARGNAME_NAME => 'override',
                 SchemaDefinition::ARGNAME_TYPE => SchemaDefinition::TYPE_BOOL,
-                SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('Indicates if to override the field with the translation. By default it is `true`. If `false`, the translation is placed under the same entry plus adding \'-\' and the language code', 'translate-directive'),
+                SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('Indicates if to override the field with the translation. If `false`, the translation is placed under the same entry plus adding \'-\' and the language code. For single-language translation, the default value is `true`', 'translate-directive'),
             ],
         ];
     }
