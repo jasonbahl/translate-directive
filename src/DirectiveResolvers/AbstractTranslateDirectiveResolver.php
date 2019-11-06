@@ -85,8 +85,7 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
         $translationAPI = TranslationAPIFacade::getInstance();
 
         // Retrieve the provider from the directiveArgs. The provider is passed as a 'static' attribute (to decide the DirectiveResolver), so it can't be taken from the resultItem schema (as is the case with the from/to lang params)
-        $directiveArgs = $fieldQueryInterpreter->extractStaticDirectiveArguments($this->directive);
-        $provider = $this->getProvider($directiveArgs);
+        $provider = $this->getProvider($this->directiveArgsForSchema);
         // Make sure that there is an endpoint
         $endpointURL = $this->getEndpoint($provider);
         if (!$endpointURL) {
@@ -106,6 +105,7 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
         // Collect all the pieces of text to translate
         $fieldOutputKeyCache = [];
         $counters = [];
+        $override = $this->directiveArgsForSchema['override'] ?? true;
         foreach ($idsDataFields as $id => $dataFields) {
             // Extract the from/to language from the params. Each pair of from/to languages can be set on a result-by-result basis,
             // that's why it's taken from resultItem and not from schema (as the provider is)
@@ -219,7 +219,12 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
                 // Iterate through the translations, and replace the original content in the dbItems object
                 foreach ($translationPositions[$sourceLang][$targetLang] as $id => $fieldOutputKeyPosition) {
                     foreach ($fieldOutputKeyPosition as $fieldOutputKey => $position) {
-                        $dbItems[$id][$fieldOutputKey] = $translations[$position];
+                        // Place it either under the same entry, or adding '-'+langCode
+                        $targetFieldOutputKey = $fieldOutputKey;
+                        if (!$override) {
+                            $targetFieldOutputKey .= '-'.$targetLang;
+                        }
+                        $dbItems[$id][$targetFieldOutputKey] = $translations[$position];
                     }
                 }
             }
@@ -283,6 +288,11 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
                 SchemaDefinition::ARGNAME_NAME => 'provider',
                 SchemaDefinition::ARGNAME_TYPE => SchemaDefinition::TYPE_STRING,
                 SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('The name of the provider whose API to use for the translation. If this value is not provided, a default provider will be used', 'translate-directive'),
+            ],
+            [
+                SchemaDefinition::ARGNAME_NAME => 'override',
+                SchemaDefinition::ARGNAME_TYPE => SchemaDefinition::TYPE_BOOL,
+                SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('Indicates if to override the field with the translation. By default it is `true`. If `false`, the translation is placed under the same entry plus adding \'-\' and the language code', 'translate-directive'),
             ],
         ];
     }
