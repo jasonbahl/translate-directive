@@ -123,7 +123,6 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
             $sourceLang = $resultItemDirectiveArgs['from'];
             // Translate to either 1 or more languages: arg 'to' can either be a string or an array
             $targetLangs = $resultItemDirectiveArgs['to'];
-            // var_dump('targetLangs', $id, $dataFields, $targetLangs);
             if (is_array($targetLangs)) {
                 // Validate it is not empty
                 if (empty($targetLangs)) {
@@ -136,8 +135,8 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
             } else {
                 $targetLangs = [$targetLangs];
             }
-            // If translating to many languages, can't override
-            if (count($targetLangs) > 1) {
+            // If translating an entry to many languages, can't override
+            if (count($targetLangs) > 1 && !$oneLanguagePerField) {
                 $override = false;
             } else {
                 // For one language, get value from arg, or true by default
