@@ -98,6 +98,7 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
             // Nothing else to do
             return;
         }
+        $oneLanguagePerField = $this->directiveArgsForSchema['oneLanguagePerField'];
         // Keep all the translations to be made by pairs of to/from language
         $contentsBySourceTargetLang = [];
         // Keep track of which translation must be placed where
@@ -122,6 +123,7 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
             $sourceLang = $resultItemDirectiveArgs['from'];
             // Translate to either 1 or more languages: arg 'to' can either be a string or an array
             $targetLangs = $resultItemDirectiveArgs['to'];
+            // var_dump('targetLangs', $id, $dataFields, $targetLangs);
             if (is_array($targetLangs)) {
                 // Validate it is not empty
                 if (empty($targetLangs)) {
@@ -142,11 +144,13 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
                 $override = $this->directiveArgsForSchema['override'] ?? true;
             }
 
-            foreach ($targetLangs as $targetLang) {
-                if (!isset($counters[$sourceLang][$targetLang])) {
-                    $counters[$sourceLang][$targetLang] = 0;
-                }
-                foreach ($dataFields['direct'] as $field) {
+            if ($oneLanguagePerField) {
+                for ($i=0; $i<count($targetLangs); $i++) {
+                    $targetLang = $targetLangs[$i];
+                    $field = $dataFields['direct'][$i];
+                    if (!isset($counters[$sourceLang][$targetLang])) {
+                        $counters[$sourceLang][$targetLang] = 0;
+                    }
                     // Get the fieldOutputKey from the cache, or calculate it
                     if (is_null($fieldOutputKeyCache[$field])) {
                         $fieldOutputKeyCache[$field] = $fieldQueryInterpreter->getFieldOutputKey($field);
@@ -156,6 +160,23 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
                     $contentsBySourceTargetLang[$sourceLang][$targetLang][] = $dbItems[$id][$fieldOutputKey];
                     $translationPositions[$sourceLang][$targetLang][$id][$fieldOutputKey] = $counters[$sourceLang][$targetLang];
                     $counters[$sourceLang][$targetLang]++;
+                }
+            } else {
+                foreach ($targetLangs as $targetLang) {
+                    if (!isset($counters[$sourceLang][$targetLang])) {
+                        $counters[$sourceLang][$targetLang] = 0;
+                    }
+                    foreach ($dataFields['direct'] as $field) {
+                        // Get the fieldOutputKey from the cache, or calculate it
+                        if (is_null($fieldOutputKeyCache[$field])) {
+                            $fieldOutputKeyCache[$field] = $fieldQueryInterpreter->getFieldOutputKey($field);
+                        }
+                        $fieldOutputKey = $fieldOutputKeyCache[$field];
+                        // Add the text to be translated, and keep the position from where it will be retrieved
+                        $contentsBySourceTargetLang[$sourceLang][$targetLang][] = $dbItems[$id][$fieldOutputKey];
+                        $translationPositions[$sourceLang][$targetLang][$id][$fieldOutputKey] = $counters[$sourceLang][$targetLang];
+                        $counters[$sourceLang][$targetLang]++;
+                    }
                 }
             }
         }
@@ -315,6 +336,11 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
                 SchemaDefinition::ARGNAME_NAME => 'override',
                 SchemaDefinition::ARGNAME_TYPE => SchemaDefinition::TYPE_BOOL,
                 SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('Indicates if to override the field with the translation. If `false`, the translation is placed under the same entry plus adding \'-\' and the language code. For single-language translation, the default value is `true`', 'translate-directive'),
+            ],
+            [
+                SchemaDefinition::ARGNAME_NAME => 'oneLanguagePerField',
+                SchemaDefinition::ARGNAME_TYPE => SchemaDefinition::TYPE_BOOL,
+                SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('Indicates if each field to translate receives its own \'to\' language. In this case, the \'to\' field must receive an array with the same amount of items as the fields, in the same order to be used. If not provided, the default value is `false`', 'translate-directive'),
             ],
         ];
     }
