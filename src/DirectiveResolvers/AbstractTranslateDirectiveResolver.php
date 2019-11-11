@@ -109,7 +109,7 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
         foreach ($idsDataFields as $id => $dataFields) {
             // Extract the from/to language from the params. Each pair of from/to languages can be set on a result-by-result basis,
             // that's why it's taken from resultItem and not from schema (as the provider is)
-            $expressions = $this->getVariablesForResultItem($id, $variables, $messages);
+            $expressions = $this->getExpressionsForResultItem($id, $variables, $messages);
             $resultItem = $resultIDItems[$id];
             list(
                 $resultItemValidDirective,
