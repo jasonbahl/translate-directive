@@ -94,7 +94,7 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
                 $translationAPI->__('Provider \'%s\' doesn\'t have an endpoint URL configured, so it can\'t proceed to do the translation', 'component-model'),
                 $provider
             );
-            $this->processFailure($failureMessage, [], $idsDataFields, $schemaErrors, $schemaWarnings);
+            $this->processFailure($failureMessage, [], $idsDataFields, $succeedingPipelineIDsDataFields, $schemaErrors, $schemaWarnings);
             // Nothing else to do
             return;
         }
@@ -202,7 +202,7 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
             // If the request failed, show an error and do nothing else
             if (GeneralUtils::isError($responses)) {
                 $failureMessage = $this->getClientFailureMessage($responses, $provider);
-                $this->processFailure($failureMessage, [], $idsDataFields, $schemaErrors, $schemaWarnings);
+                $this->processFailure($failureMessage, [], $idsDataFields, $succeedingPipelineIDsDataFields, $schemaErrors, $schemaWarnings);
                 return;
             }
         } else {
@@ -211,7 +211,7 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
                 // If the request failed, show an error and do nothing else
                 if (GeneralUtils::isError($response)) {
                     $failureMessage = $this->getClientFailureMessage($response, $provider);
-                    $this->processFailure($failureMessage, [], $idsDataFields, $schemaErrors, $schemaWarnings);
+                    $this->processFailure($failureMessage, [], $idsDataFields, $succeedingPipelineIDsDataFields, $schemaErrors, $schemaWarnings);
                 }
                 $responses[] = $response;
             }
@@ -254,7 +254,7 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
                         $translationAPI->__('There was an error processing the response from the Provider API: %s', 'component-model'),
                         $errorMessage
                     );
-                    $this->processFailure($failureMessage, [], $idsDataFields, $schemaErrors, $schemaWarnings);
+                    $this->processFailure($failureMessage, [], $idsDataFields, $succeedingPipelineIDsDataFields, $schemaErrors, $schemaWarnings);
                     continue;
                 }
                 $translations = $this->extractTranslationsFromResponse($provider, $response);
