@@ -22,16 +22,6 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
         return self::DIRECTIVE_NAME;
     }
 
-    /**
-     * This directive must be executed after ResolveAndMerge, and modify values directly on the returned DB items
-     *
-     * @return void
-     */
-    public function getPipelinePosition(): string
-    {
-        return PipelinePositions::BACK;
-    }
-
         /**
      * The name of the API's provider
      *
