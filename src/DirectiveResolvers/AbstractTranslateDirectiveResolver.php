@@ -7,7 +7,6 @@ use PoP\GuzzleHelpers\GuzzleHelpers;
 use PoP\TranslateDirective\Environment;
 use PoP\Translation\Facades\TranslationAPIFacade;
 use PoP\TranslateDirective\Schema\SchemaDefinition;
-use PoP\ComponentModel\FieldResolvers\PipelinePositions;
 use PoP\TranslateDirective\Facades\TranslationServiceFacade;
 use PoP\ComponentModel\FieldResolvers\FieldResolverInterface;
 use PoP\ComponentModel\Environment as ComponentModelEnvironment;
