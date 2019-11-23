@@ -52,7 +52,7 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
      * @param array $directiveArgs
      * @return boolean
      */
-    public function resolveCanProcess(FieldResolverInterface $fieldResolver, string $directiveName, array $directiveArgs = [], string $field): bool
+    public function resolveCanProcess(FieldResolverInterface $fieldResolver, string $directiveName, array $directiveArgs = [], string $field, array &$variables): bool
     {
         $provider = $this->getProvider($directiveArgs);
         return in_array($provider, $this->getProvidersToResolve());
