@@ -287,7 +287,7 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
     public function getSchemaDirectiveDescription(FieldResolverInterface $fieldResolver): ?string
     {
         $translationAPI = TranslationAPIFacade::getInstance();
-        return $translationAPI->__('Translate a string using the API from some provider', 'translate-directive');
+        return $translationAPI->__('Translate a string using the API from a certain provider', 'translate-directive');
     }
     public function getSchemaDirectiveArgs(FieldResolverInterface $fieldResolver): array
     {
@@ -306,11 +306,6 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
                 SchemaDefinition::ARGNAME_MANDATORY => true,
             ],
             [
-                SchemaDefinition::ARGNAME_NAME => 'provider',
-                SchemaDefinition::ARGNAME_TYPE => SchemaDefinition::TYPE_STRING,
-                SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('The name of the provider whose API to use for the translation. If this value is not provided, a default provider will be used', 'translate-directive'),
-            ],
-            [
                 SchemaDefinition::ARGNAME_NAME => 'override',
                 SchemaDefinition::ARGNAME_TYPE => SchemaDefinition::TYPE_BOOL,
                 SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('Indicates if to override the field with the translation. If `false`, the translation is placed under the same entry plus adding \'-\' and the language code. For single-language translation, the default value is `true`', 'translate-directive'),
@@ -319,6 +314,11 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
                 SchemaDefinition::ARGNAME_NAME => 'oneLanguagePerField',
                 SchemaDefinition::ARGNAME_TYPE => SchemaDefinition::TYPE_BOOL,
                 SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('Indicates if each field to translate receives its own \'to\' language. In this case, the \'to\' field must receive an array with the same amount of items as the fields, in the same order to be used. If not provided, the default value is `false`', 'translate-directive'),
+            ],
+            [
+                SchemaDefinition::ARGNAME_NAME => 'provider',
+                SchemaDefinition::ARGNAME_TYPE => SchemaDefinition::TYPE_STRING,
+                SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('The name of the provider whose API to use for the translation. If this value is not provided, a default provider will be used', 'translate-directive'),
             ],
         ];
     }
@@ -329,6 +329,6 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
     protected function addSchemaDefinitionForDirective(array &$schemaDefinition)
     {
         // Further add for which providers it works
-        $schemaDefinition[SchemaDefinition::ARGNAME_FOR_PROVIDERS] = $this->getProvidersToResolve();
+        $schemaDefinition[SchemaDefinition::ARGNAME_PROVIDERS] = $this->getProvidersToResolve();
     }
 }
