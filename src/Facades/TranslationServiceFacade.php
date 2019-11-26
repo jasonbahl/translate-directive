@@ -1,7 +1,7 @@
 <?php
 namespace PoP\TranslateDirective\Facades;
 
-use PoP\TranslateDirective\TranslationServiceInterface;
+use PoP\TranslateDirective\Translation\TranslationServiceInterface;
 use PoP\Root\Container\ContainerBuilderFactory;
 
 class TranslationServiceFacade

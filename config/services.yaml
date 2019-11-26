@@ -1,4 +1,4 @@
 services:
     translation_service:
-        class: \PoP\TranslateDirective\TranslationService
+        class: \PoP\TranslateDirective\Translation\TranslationService
         public: true

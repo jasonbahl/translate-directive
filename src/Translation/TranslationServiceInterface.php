@@ -1,5 +1,5 @@
 <?php
-namespace PoP\TranslateDirective;
+namespace PoP\TranslateDirective\Translation;
 
 interface TranslationServiceInterface
 {
