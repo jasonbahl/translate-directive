@@ -177,7 +177,7 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
         // --> Fragile: if the translation for a single pair of languages fails, then the translation for all pairs fail!
         if (Environment::useAsyncForMultiLanguageTranslation()) {
             // Send all the queries for all languages all concurrently and asynchronously
-            $responses = GuzzleHelpers::requestAsyncJSON($endpointURL, $queries);
+            $responses = GuzzleHelpers::requestSingleURLMultipleQueriesAsyncJSON($endpointURL, $queries);
             // If the request failed, show an error and do nothing else
             if (GeneralUtils::isError($responses)) {
                 $failureMessage = $this->getClientFailureMessage($responses, $provider);
