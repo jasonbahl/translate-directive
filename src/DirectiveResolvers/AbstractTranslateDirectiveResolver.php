@@ -106,7 +106,7 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
                 // Validate it is not empty
                 if (empty($targetLangs)) {
                     $dbErrors[(string)$id][] = [
-                        'path' => $this->directive,
+                        'path' => [$this->directive],
                         'message' => sprintf(
                             $translationAPI->__('The target language for object with ID \'%s\' is missing, so can\'t continue', 'component-model'),
                             $id
@@ -213,7 +213,7 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
                         foreach ($fieldOutputKeyPosition as $fieldOutputKey => $position) {
                             if ($removeFieldIfDirectiveFailed) {
                                 $dbErrors[(string)$id][] = [
-                                    'path' => $this->directive,
+                                    'path' => [$this->directive],
                                     'message' => sprintf(
                                         $translationAPI->__('Due to some previous error, this directive has not been executed on property \'%s\' for object with ID \'%s\'', 'component-model'),
                                         $fieldOutputKey,
@@ -222,7 +222,7 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
                                 ];
                             } else {
                                 $dbWarnings[(string)$id][] = [
-                                    'path' => $this->directive,
+                                    'path' => [$this->directive],
                                     'message' => sprintf(
                                         $translationAPI->__('Due to some previous warning, property \'%s\' for object with ID \'%s\' has not been translated', 'component-model'),
                                         $fieldOutputKey,
