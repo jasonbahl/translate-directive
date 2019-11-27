@@ -105,10 +105,13 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
             if (is_array($targetLangs)) {
                 // Validate it is not empty
                 if (empty($targetLangs)) {
-                    $dbErrors[(string)$id][$this->directive][] = sprintf(
-                        $translationAPI->__('The target language for object with ID \'%s\' is missing, so can\'t continue', 'component-model'),
-                        $id
-                    );
+                    $dbErrors[(string)$id][] = [
+                        'path' => $this->directive,
+                        'message' => sprintf(
+                            $translationAPI->__('The target language for object with ID \'%s\' is missing, so can\'t continue', 'component-model'),
+                            $id
+                        ),
+                    ];
                     continue;
                 }
             } else {
@@ -209,17 +212,23 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
                     foreach ($translationPositions[$sourceLang][$targetLang] as $id => $fieldOutputKeyPosition) {
                         foreach ($fieldOutputKeyPosition as $fieldOutputKey => $position) {
                             if ($removeFieldIfDirectiveFailed) {
-                                $dbErrors[(string)$id][$this->directive][] = sprintf(
-                                    $translationAPI->__('Due to some previous error, this directive has not been executed on property \'%s\' for object with ID \'%s\'', 'component-model'),
-                                    $fieldOutputKey,
-                                    $id
-                                );
+                                $dbErrors[(string)$id][] = [
+                                    'path' => $this->directive,
+                                    'message' => sprintf(
+                                        $translationAPI->__('Due to some previous error, this directive has not been executed on property \'%s\' for object with ID \'%s\'', 'component-model'),
+                                        $fieldOutputKey,
+                                        $id
+                                    ),
+                                ];
                             } else {
-                                $dbWarnings[(string)$id][$this->directive][] = sprintf(
-                                    $translationAPI->__('Due to some previous warning, property \'%s\' for object with ID \'%s\' has not been translated', 'component-model'),
-                                    $fieldOutputKey,
-                                    $id
-                                );
+                                $dbWarnings[(string)$id][] = [
+                                    'path' => $this->directive,
+                                    'message' => sprintf(
+                                        $translationAPI->__('Due to some previous warning, property \'%s\' for object with ID \'%s\' has not been translated', 'component-model'),
+                                        $fieldOutputKey,
+                                        $id
+                                    ),
+                                ];
                             }
                         }
                     }
