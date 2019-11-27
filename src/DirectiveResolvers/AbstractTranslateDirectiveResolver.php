@@ -13,6 +13,7 @@ use PoP\ComponentModel\Environment as ComponentModelEnvironment;
 use PoP\ComponentModel\Facades\Schema\FieldQueryInterpreterFacade;
 use PoP\ComponentModel\DirectiveResolvers\AbstractSchemaDirectiveResolver;
 use PoP\ComponentModel\DataloaderInterface;
+use PoP\ComponentModel\Feedback\Tokens;
 
 abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiveResolver
 {
@@ -106,8 +107,8 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
                 // Validate it is not empty
                 if (empty($targetLangs)) {
                     $dbErrors[(string)$id][] = [
-                        'path' => [$this->directive],
-                        'message' => sprintf(
+                        Tokens::PATH => [$this->directive],
+                        Tokens::MESSAGE => sprintf(
                             $translationAPI->__('The target language for object with ID \'%s\' is missing, so can\'t continue', 'component-model'),
                             $id
                         ),
@@ -213,8 +214,8 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
                         foreach ($fieldOutputKeyPosition as $fieldOutputKey => $position) {
                             if ($removeFieldIfDirectiveFailed) {
                                 $dbErrors[(string)$id][] = [
-                                    'path' => [$this->directive],
-                                    'message' => sprintf(
+                                    Tokens::PATH => [$this->directive],
+                                    Tokens::MESSAGE => sprintf(
                                         $translationAPI->__('Due to some previous error, this directive has not been executed on property \'%s\' for object with ID \'%s\'', 'component-model'),
                                         $fieldOutputKey,
                                         $id
@@ -222,8 +223,8 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
                                 ];
                             } else {
                                 $dbWarnings[(string)$id][] = [
-                                    'path' => [$this->directive],
-                                    'message' => sprintf(
+                                    Tokens::PATH => [$this->directive],
+                                    Tokens::MESSAGE => sprintf(
                                         $translationAPI->__('Due to some previous warning, property \'%s\' for object with ID \'%s\' has not been translated', 'component-model'),
                                         $fieldOutputKey,
                                         $id
