@@ -8,7 +8,7 @@ use PoP\TranslateDirective\Environment;
 use PoP\Translation\Facades\TranslationAPIFacade;
 use PoP\TranslateDirective\Schema\SchemaDefinition;
 use PoP\TranslateDirective\Facades\TranslationServiceFacade;
-use PoP\ComponentModel\FieldResolvers\FieldResolverInterface;
+use PoP\ComponentModel\TypeResolvers\TypeResolverInterface;
 use PoP\ComponentModel\Environment as ComponentModelEnvironment;
 use PoP\ComponentModel\Facades\Schema\FieldQueryInterpreterFacade;
 use PoP\ComponentModel\DirectiveResolvers\AbstractSchemaDirectiveResolver;
@@ -48,18 +48,18 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
     /**
      * Only process the directive if this directiveResolver can handle the provider
      *
-     * @param FieldResolverInterface $fieldResolver
+     * @param TypeResolverInterface $typeResolver
      * @param string $directiveName
      * @param array $directiveArgs
      * @return boolean
      */
-    public function resolveCanProcess(FieldResolverInterface $fieldResolver, string $directiveName, array $directiveArgs = [], string $field, array &$variables): bool
+    public function resolveCanProcess(TypeResolverInterface $typeResolver, string $directiveName, array $directiveArgs = [], string $field, array &$variables): bool
     {
         $provider = $this->getProvider($directiveArgs);
         return in_array($provider, $this->getProvidersToResolve());
     }
 
-    public function resolveDirective(DataloaderInterface $dataloader, FieldResolverInterface $fieldResolver, array &$idsDataFields, array &$succeedingPipelineIDsDataFields, array &$resultIDItems, array &$dbItems, array &$previousDBItems, array &$variables, array &$messages, array &$dbErrors, array &$dbWarnings, array &$schemaErrors, array &$schemaWarnings, array &$schemaDeprecations)
+    public function resolveDirective(DataloaderInterface $dataloader, TypeResolverInterface $typeResolver, array &$idsDataFields, array &$succeedingPipelineIDsDataFields, array &$resultIDItems, array &$dbItems, array &$previousDBItems, array &$variables, array &$messages, array &$dbErrors, array &$dbWarnings, array &$schemaErrors, array &$schemaWarnings, array &$schemaDeprecations)
     {
         $fieldQueryInterpreter = FieldQueryInterpreterFacade::getInstance();
         $translationAPI = TranslationAPIFacade::getInstance();
@@ -95,7 +95,7 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
                 $resultItemValidDirective,
                 $resultItemDirectiveName,
                 $resultItemDirectiveArgs
-            ) = $this->dissectAndValidateDirectiveForResultItem($fieldResolver, $resultItem, $variables, $expressions, $dbErrors, $dbWarnings);
+            ) = $this->dissectAndValidateDirectiveForResultItem($typeResolver, $resultItem, $variables, $expressions, $dbErrors, $dbWarnings);
             // Check that the directive is valid. If it is not, $dbErrors will have the error already added
             if (is_null($resultItemValidDirective)) {
                 continue;
@@ -294,12 +294,12 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
     {
         return $response;
     }
-    public function getSchemaDirectiveDescription(FieldResolverInterface $fieldResolver): ?string
+    public function getSchemaDirectiveDescription(TypeResolverInterface $typeResolver): ?string
     {
         $translationAPI = TranslationAPIFacade::getInstance();
         return $translationAPI->__('Translate a string using the API from a certain provider', 'translate-directive');
     }
-    public function getSchemaDirectiveArgs(FieldResolverInterface $fieldResolver): array
+    public function getSchemaDirectiveArgs(TypeResolverInterface $typeResolver): array
     {
         $translationAPI = TranslationAPIFacade::getInstance();
         return [
