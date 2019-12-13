@@ -301,6 +301,7 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
     public function getSchemaDirectiveArgs(TypeResolverInterface $typeResolver): array
     {
         $translationAPI = TranslationAPIFacade::getInstance();
+        $translationService = TranslationServiceFacade::getInstance();
         return [
             [
                 SchemaDefinition::ARGNAME_NAME => 'from',
@@ -317,17 +318,20 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
             [
                 SchemaDefinition::ARGNAME_NAME => 'override',
                 SchemaDefinition::ARGNAME_TYPE => SchemaDefinition::TYPE_BOOL,
-                SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('Indicates if to override the field with the translation. If `false`, the translation is placed under the same entry plus adding \'-\' and the language code. For single-language translation, the default value is `true`', 'translate-directive'),
+                SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('Indicates if to override the field with the translation (valid only when argument \'to\' contains a single language code). If `false`, the translation is placed under the same entry plus adding \'-\' and the language code', 'translate-directive'),
+                SchemaDefinition::ARGNAME_DEFAULT_VALUE => 'true',
             ],
             [
                 SchemaDefinition::ARGNAME_NAME => 'oneLanguagePerField',
                 SchemaDefinition::ARGNAME_TYPE => SchemaDefinition::TYPE_BOOL,
-                SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('Indicates if each field to translate receives its own \'to\' language. In this case, the \'to\' field must receive an array with the same amount of items as the fields, in the same order to be used. If not provided, the default value is `false`', 'translate-directive'),
+                SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('Indicates if each field to translate receives its own \'to\' language. In this case, the \'to\' field must receive an array with the same amount of items as the fields, in the same order to be used', 'translate-directive'),
+                SchemaDefinition::ARGNAME_DEFAULT_VALUE => 'false',
             ],
             [
                 SchemaDefinition::ARGNAME_NAME => 'provider',
                 SchemaDefinition::ARGNAME_TYPE => SchemaDefinition::TYPE_STRING,
-                SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('The name of the provider whose API to use for the translation. If this value is not provided, a default provider will be used', 'translate-directive'),
+                SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('The name of the provider whose API to use for the translation', 'translate-directive'),
+                SchemaDefinition::ARGNAME_DEFAULT_VALUE => $translationService->getDefaultProvider(),
             ],
         ];
     }
