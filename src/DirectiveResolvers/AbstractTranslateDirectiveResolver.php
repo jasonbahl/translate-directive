@@ -319,13 +319,13 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
                 SchemaDefinition::ARGNAME_NAME => 'override',
                 SchemaDefinition::ARGNAME_TYPE => SchemaDefinition::TYPE_BOOL,
                 SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('Indicates if to override the field with the translation (valid only when argument \'to\' contains a single language code). If `false`, the translation is placed under the same entry plus adding \'-\' and the language code', 'translate-directive'),
-                SchemaDefinition::ARGNAME_DEFAULT_VALUE => 'true',
+                SchemaDefinition::ARGNAME_DEFAULT_VALUE => true,
             ],
             [
                 SchemaDefinition::ARGNAME_NAME => 'oneLanguagePerField',
                 SchemaDefinition::ARGNAME_TYPE => SchemaDefinition::TYPE_BOOL,
                 SchemaDefinition::ARGNAME_DESCRIPTION => $translationAPI->__('Indicates if each field to translate receives its own \'to\' language. In this case, the \'to\' field must receive an array with the same amount of items as the fields, in the same order to be used', 'translate-directive'),
-                SchemaDefinition::ARGNAME_DEFAULT_VALUE => 'false',
+                SchemaDefinition::ARGNAME_DEFAULT_VALUE => false,
             ],
             [
                 SchemaDefinition::ARGNAME_NAME => 'provider',
