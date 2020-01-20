@@ -181,11 +181,13 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
         if (Environment::useAsyncForMultiLanguageTranslation()) {
             // Send all the queries for all languages all concurrently and asynchronously
             $responses = GuzzleHelpers::requestSingleURLMultipleQueriesAsyncJSON($endpointURL, $queries);
-            // If the request failed, show an error and do nothing else
-            if (GeneralUtils::isError($responses)) {
-                $failureMessage = $this->getClientFailureMessage($responses, $provider);
-                $this->processFailure($failureMessage, [], $idsDataFields, $succeedingPipelineIDsDataFields, $schemaErrors, $schemaWarnings);
-                return;
+            foreach ($responses as $response) {
+                if (GeneralUtils::isError($response)) {
+                    $failureMessage = $this->getClientFailureMessage($response, $provider);
+                    $this->processFailure($failureMessage, [], $idsDataFields, $succeedingPipelineIDsDataFields, $schemaErrors, $schemaWarnings);
+                    continue;
+                }
+                $responses[] = $response;
             }
         } else {
             foreach ($queries as $query) {
