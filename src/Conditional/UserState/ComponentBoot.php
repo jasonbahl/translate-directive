@@ -2,7 +2,10 @@
 namespace PoP\TranslateDirective\Conditional\UserState;
 
 use PoP\TranslateDirective\Environment;
+use PoP\API\Environment as APIEnvironment;
 use PoP\ComponentModel\Container\ContainerBuilderUtils;
+use PoP\ComponentModel\AttachableExtensions\AttachableExtensionGroups;
+use PoP\TranslateDirective\Conditional\UserState\TypeResolverDecorators\GlobalTypeResolverDecorator;
 use PoP\TranslateDirective\Conditional\UserState\Hooks\MaybeDisableDirectivesIfUserNotLoggedInHookSet;
 
 /**
@@ -29,7 +32,11 @@ class ComponentBoot
     protected static function attachDynamicHooks()
     {
         if (Environment::userMustBeLoggedInToTranslate()) {
-            ContainerBuilderUtils::instantiateService(MaybeDisableDirectivesIfUserNotLoggedInHookSet::class);
+            if (APIEnvironment::usePrivateSchemaMode()) {
+                ContainerBuilderUtils::instantiateService(MaybeDisableDirectivesIfUserNotLoggedInHookSet::class);
+            } else {
+                GlobalTypeResolverDecorator::attach(AttachableExtensionGroups::TYPERESOLVERDECORATORS);
+            }
         }
     }
 }

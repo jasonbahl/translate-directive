@@ -12,6 +12,14 @@ services:
         resource: '../src/Conditional/UserState/Hooks/*'
         public: true
 
+    PoP\TranslateDirective\Conditional\UserState\TypeResolverDecorators\:
+        resource: '../src/Conditional/UserState/TypeResolverDecorators/*'
+        public: true
+
     PoP\TranslateDirective\Conditional\UserRoles\Hooks\:
         resource: '../src/Conditional/UserRoles/Hooks/*'
+        public: true
+
+    PoP\TranslateDirective\Conditional\UserRoles\TypeResolverDecorators\:
+        resource: '../src/Conditional/UserRoles/TypeResolverDecorators/*'
         public: true
