@@ -1,4 +1,17 @@
 services:
+    _defaults:
+        bind:
+            PoP\Hooks\HooksAPIInterface: '@hooks_api'
+            PoP\Translation\TranslationAPIInterface: '@translation_api'
+
     translation_service:
         class: \PoP\TranslateDirective\Translation\TranslationService
+        public: true
+
+    PoP\TranslateDirective\Conditional\UserState\Hooks\:
+        resource: '../src/Conditional/UserState/Hooks/*'
+        public: true
+
+    PoP\TranslateDirective\Conditional\UserRoles\Hooks\:
+        resource: '../src/Conditional/UserRoles/Hooks/*'
         public: true

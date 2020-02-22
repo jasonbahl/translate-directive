@@ -22,4 +22,21 @@ class Component extends AbstractComponent
         self::initYAMLServices(dirname(__DIR__));
         ServiceConfiguration::init();
     }
+
+    /**
+     * Boot component
+     *
+     * @return void
+     */
+    public static function boot()
+    {
+        parent::boot();
+
+        if (class_exists('\PoP\UserState\Component')) {
+            \PoP\TranslateDirective\Conditional\UserState\ComponentBoot::boot();
+        }
+        if (class_exists('\PoP\UserRoles\Component')) {
+            \PoP\TranslateDirective\Conditional\UserRoles\ComponentBoot::boot();
+        }
+    }
 }
