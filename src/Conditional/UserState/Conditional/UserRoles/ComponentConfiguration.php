@@ -8,12 +8,16 @@ class ComponentConfiguration extends AbstractComponentConfiguration
     private static $roleLoggedInUserMustHaveToAccessTranslateDirective;
     public static function roleLoggedInUserMustHaveToAccessTranslateDirective(): ?string
     {
+        // Define properties
         $envVariable = Environment::ROLE_LOGGED_IN_USER_MUST_HAVE_TO_ACCESS_TRANSLATE_DIRECTIVE;
         $selfProperty = &self::$roleLoggedInUserMustHaveToAccessTranslateDirective;
+        $callback = [Environment::class, 'roleLoggedInUserMustHaveToAccessTranslateDirective'];
+
+        // Initialize property from the environment/hook
         self::maybeInitEnvironmentVariable(
             $envVariable,
             $selfProperty,
-            [Environment::class, 'roleLoggedInUserMustHaveToAccessTranslateDirective']
+            $callback
         );
         return $selfProperty;
     }
