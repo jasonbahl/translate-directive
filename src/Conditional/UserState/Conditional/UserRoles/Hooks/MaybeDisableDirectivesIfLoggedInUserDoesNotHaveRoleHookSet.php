@@ -1,7 +1,7 @@
 <?php
 namespace PoP\TranslateDirective\Conditional\UserState\Conditional\UserRoles\Hooks;
 
-use PoP\TranslateDirective\Conditional\UserState\Conditional\UserRoles\Environment;
+use PoP\TranslateDirective\Conditional\UserState\Conditional\UserRoles\ComponentConfiguration;
 use PoP\ComponentModel\TypeResolvers\TypeResolverInterface;
 use PoP\UserRoles\Hooks\AbstractMaybeDisableDirectivesIfLoggedInUserDoesNotHaveRoleHookSet;
 
@@ -9,7 +9,7 @@ class MaybeDisableDirectivesIfLoggedInUserDoesNotHaveRoleHookSet extends Abstrac
 {
     protected function getRoleName(): ?string
     {
-        return Environment::roleLoggedInUserMustHaveToAccessTranslateDirective();
+        return ComponentConfiguration::roleLoggedInUserMustHaveToAccessTranslateDirective();
     }
 
     /**
