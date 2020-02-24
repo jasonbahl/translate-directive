@@ -5,7 +5,7 @@ use PoP\TranslateDirective\Conditional\UserState\ComponentConfiguration;
 use PoP\API\Environment as APIEnvironment;
 use PoP\ComponentModel\Container\ContainerBuilderUtils;
 use PoP\ComponentModel\AttachableExtensions\AttachableExtensionGroups;
-use PoP\TranslateDirective\Conditional\UserRoles\TypeResolverDecorators\GlobalValidateDoesLoggedInHaveRoleForDirectivesTypeResolverDecorator;
+use PoP\TranslateDirective\Conditional\UserState\Conditional\UserRoles\TypeResolverDecorators\GlobalValidateDoesLoggedInHaveRoleForDirectivesTypeResolverDecorator;
 use PoP\TranslateDirective\Conditional\UserState\Hooks\MaybeDisableDirectivesIfUserNotLoggedInHookSet;
 use PoP\Root\Component\YAMLServicesTrait;
 use PoP\TranslateDirective\Component;
