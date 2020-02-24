@@ -15,7 +15,7 @@ class ComponentConfiguration extends AbstractComponentConfiguration
             $selfProperty,
             [Environment::class, 'userMustBeLoggedInToAccessTranslateDirective']
         );
-        return (bool)$selfProperty;
+        return $selfProperty;
     }
 }
 
