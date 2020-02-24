@@ -10,6 +10,7 @@ use PoP\Root\Component\YAMLServicesTrait;
  */
 class Component extends AbstractComponent
 {
+    public static $COMPONENT_DIR;
     use YAMLServicesTrait;
     // const VERSION = '0.1.0';
 
@@ -19,8 +20,13 @@ class Component extends AbstractComponent
     public static function init()
     {
         parent::init();
-        self::initYAMLServices(dirname(__DIR__));
+        self::$COMPONENT_DIR = dirname(__DIR__);
+        self::initYAMLServices(self::$COMPONENT_DIR);
         ServiceConfiguration::init();
+
+        if (class_exists('\PoP\UserState\Component')) {
+            \PoP\TranslateDirective\Conditional\UserState\ConditionalComponent::init();
+        }
     }
 
     /**
@@ -33,7 +39,7 @@ class Component extends AbstractComponent
         parent::boot();
 
         if (class_exists('\PoP\UserState\Component')) {
-            \PoP\TranslateDirective\Conditional\UserState\ComponentBoot::boot();
+            \PoP\TranslateDirective\Conditional\UserState\ConditionalComponent::boot();
         }
     }
 }

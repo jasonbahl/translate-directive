@@ -7,12 +7,25 @@ use PoP\ComponentModel\Container\ContainerBuilderUtils;
 use PoP\ComponentModel\AttachableExtensions\AttachableExtensionGroups;
 use PoP\TranslateDirective\Conditional\UserRoles\TypeResolverDecorators\GlobalValidateDoesLoggedInHaveRoleForDirectivesTypeResolverDecorator;
 use PoP\TranslateDirective\Conditional\UserState\Hooks\MaybeDisableDirectivesIfUserNotLoggedInHookSet;
+use PoP\Root\Component\YAMLServicesTrait;
+use PoP\TranslateDirective\Component;
 
 /**
  * Initialize component
  */
-class ComponentBoot
+class ConditionalComponent
 {
+    use YAMLServicesTrait;
+
+    public static function init()
+    {
+        self::initYAMLServices(Component::$COMPONENT_DIR, '/Conditional/UserState');
+
+        if (class_exists('\PoP\UserRoles\Component')) {
+            \PoP\TranslateDirective\Conditional\UserState\Conditional\UserRoles\ConditionalComponent::init();
+        }
+    }
+
     /**
      * Boot component
      *
@@ -24,7 +37,7 @@ class ComponentBoot
         self::attachDynamicHooks();
 
         if (class_exists('\PoP\UserRoles\Component')) {
-            \PoP\TranslateDirective\Conditional\UserState\Conditional\UserRoles\ComponentBoot::boot();
+            \PoP\TranslateDirective\Conditional\UserState\Conditional\UserRoles\ConditionalComponent::boot();
         }
     }
 
