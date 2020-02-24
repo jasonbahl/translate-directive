@@ -7,8 +7,8 @@ use PoP\ComponentModel\Container\ContainerBuilderUtils;
 use PoP\ComponentModel\AttachableExtensions\AttachableExtensionGroups;
 use PoP\TranslateDirective\Conditional\UserState\Conditional\UserRoles\TypeResolverDecorators\GlobalValidateDoesLoggedInHaveRoleForDirectivesPublicSchemaTypeResolverDecorator;
 use PoP\TranslateDirective\Conditional\UserState\Conditional\UserRoles\Hooks\MaybeDisableDirectivesIfLoggedInUserDoesNotHaveRolePrivateSchemaHookSet;
-use PoP\TranslateDirective\Conditional\UserState\Conditional\UserRoles\TypeResolverDecorators\GlobalValidateDoesLoggedInHaveCapabilityForDirectivesTypeResolverDecorator;
-use PoP\TranslateDirective\Conditional\UserState\Conditional\UserRoles\Hooks\MaybeDisableDirectivesIfLoggedInUserDoesNotHaveCapabilityHookSet;
+use PoP\TranslateDirective\Conditional\UserState\Conditional\UserRoles\TypeResolverDecorators\GlobalValidateDoesLoggedInHaveCapabilityForDirectivesPublicSchemaTypeResolverDecorator;
+use PoP\TranslateDirective\Conditional\UserState\Conditional\UserRoles\Hooks\MaybeDisableDirectivesIfLoggedInUserDoesNotHaveCapabilityPrivateSchemaHookSet;
 use PoP\Root\Component\YAMLServicesTrait;
 use PoP\TranslateDirective\Component;
 
@@ -47,11 +47,8 @@ class ConditionalComponent
             GlobalValidateDoesLoggedInHaveRoleForDirectivesPublicSchemaTypeResolverDecorator::attach(AttachableExtensionGroups::TYPERESOLVERDECORATORS);
         }
         if (!is_null(ComponentConfiguration::capabilityLoggedInUserMustHaveToAccessTranslateDirective())) {
-            if (APIEnvironment::usePrivateSchemaMode()) {
-                ContainerBuilderUtils::instantiateService(MaybeDisableDirectivesIfLoggedInUserDoesNotHaveCapabilityHookSet::class);
-            } else {
-                GlobalValidateDoesLoggedInHaveCapabilityForDirectivesTypeResolverDecorator::attach(AttachableExtensionGroups::TYPERESOLVERDECORATORS);
-            }
+            ContainerBuilderUtils::instantiateService(MaybeDisableDirectivesIfLoggedInUserDoesNotHaveCapabilityPrivateSchemaHookSet::class);
+            GlobalValidateDoesLoggedInHaveCapabilityForDirectivesPublicSchemaTypeResolverDecorator::attach(AttachableExtensionGroups::TYPERESOLVERDECORATORS);
         }
     }
 }

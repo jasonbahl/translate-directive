@@ -3,9 +3,9 @@ namespace PoP\TranslateDirective\Conditional\UserState\Conditional\UserRoles\Hoo
 
 use PoP\TranslateDirective\Conditional\UserState\Conditional\UserRoles\ComponentConfiguration;
 use PoP\ComponentModel\TypeResolvers\TypeResolverInterface;
-use PoP\UserRoles\Hooks\AbstractMaybeDisableDirectivesIfLoggedInUserDoesNotHaveCapabilityHookSet;
+use PoP\UserRoles\Hooks\AbstractMaybeDisableDirectivesIfLoggedInUserDoesNotHaveCapabilityPrivateSchemaHookSet;
 
-class MaybeDisableDirectivesIfLoggedInUserDoesNotHaveCapabilityHookSet extends AbstractMaybeDisableDirectivesIfLoggedInUserDoesNotHaveCapabilityHookSet
+class MaybeDisableDirectivesIfLoggedInUserDoesNotHaveCapabilityPrivateSchemaHookSet extends AbstractMaybeDisableDirectivesIfLoggedInUserDoesNotHaveCapabilityPrivateSchemaHookSet
 {
     protected function getCapability(): ?string
     {
