@@ -5,7 +5,7 @@ use PoP\ComponentModel\TypeResolvers\AbstractTypeResolver;
 use PoP\TranslateDirective\DirectiveResolvers\AbstractTranslateDirectiveResolver;
 use PoP\UserState\TypeResolverDecorators\AbstractValidateIsUserLoggedInTypeResolverDecorator;
 
-class GlobalTypeResolverDecorator extends AbstractValidateIsUserLoggedInTypeResolverDecorator
+class GlobalValidateIsUserLoggedInTypeResolverDecorator extends AbstractValidateIsUserLoggedInTypeResolverDecorator
 {
     public static function getClassesToAttachTo(): array
     {
