@@ -5,7 +5,7 @@ use PoP\TranslateDirective\Environment;
 use PoP\API\Environment as APIEnvironment;
 use PoP\ComponentModel\Container\ContainerBuilderUtils;
 use PoP\ComponentModel\AttachableExtensions\AttachableExtensionGroups;
-use PoP\TranslateDirective\Conditional\UserRoles\TypeResolverDecorators\GlobalTypeResolverDecorator;
+use PoP\TranslateDirective\Conditional\UserRoles\TypeResolverDecorators\GlobalValidateDoesLoggedInHaveRoleForDirectivesTypeResolverDecorator;
 use PoP\TranslateDirective\Conditional\UserRoles\Hooks\MaybeDisableDirectivesIfLoggedInUserDoesNotHaveRoleHookSet;
 
 /**
@@ -35,7 +35,7 @@ class ComponentBoot
             if (APIEnvironment::usePrivateSchemaMode()) {
                 ContainerBuilderUtils::instantiateService(MaybeDisableDirectivesIfLoggedInUserDoesNotHaveRoleHookSet::class);
             } else {
-                GlobalTypeResolverDecorator::attach(AttachableExtensionGroups::TYPERESOLVERDECORATORS);
+                GlobalValidateDoesLoggedInHaveRoleForDirectivesTypeResolverDecorator::attach(AttachableExtensionGroups::TYPERESOLVERDECORATORS);
             }
         }
     }
