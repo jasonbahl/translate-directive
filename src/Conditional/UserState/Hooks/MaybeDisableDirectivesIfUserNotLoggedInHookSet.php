@@ -14,8 +14,10 @@ class MaybeDisableDirectivesIfUserNotLoggedInHookSet extends AbstractMaybeDisabl
      * @param string $directiveName
      * @return boolean
      */
-    protected function removeDirectiveNames(TypeResolverInterface $typeResolver, string $directiveName): bool
+    protected function getDirectiveNames(): array
     {
-        return $directiveName == 'translate';
+        return [
+            'translate',
+        ];
     }
 }

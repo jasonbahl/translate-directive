@@ -13,15 +13,17 @@ class MaybeDisableDirectivesIfLoggedInUserDoesNotHaveRoleHookSet extends Abstrac
     }
 
     /**
-     * Remove directiveName "roles" if the user is not logged in
+     * Remove directiveName "translate" if the user is not logged in
      *
      * @param boolean $include
      * @param TypeResolverInterface $typeResolver
      * @param string $directiveName
      * @return boolean
      */
-    protected function removeDirectiveNames(TypeResolverInterface $typeResolver, string $directiveName): bool
+    protected function getDirectiveNames(): array
     {
-        return $directiveName == 'translate';
+        return [
+            'translate',
+        ];
     }
 }
