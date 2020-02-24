@@ -3,9 +3,9 @@ namespace PoP\TranslateDirective\Conditional\UserState\TypeResolverDecorators;
 
 use PoP\ComponentModel\TypeResolvers\AbstractTypeResolver;
 use PoP\TranslateDirective\DirectiveResolvers\AbstractTranslateDirectiveResolver;
-use PoP\UserState\TypeResolverDecorators\AbstractValidateIsUserLoggedInTypeResolverDecorator;
+use PoP\UserState\TypeResolverDecorators\AbstractValidateIsUserLoggedInForDirectivesTypeResolverDecorator;
 
-class GlobalValidateIsUserLoggedInTypeResolverDecorator extends AbstractValidateIsUserLoggedInTypeResolverDecorator
+class GlobalValidateIsUserLoggedInTypeResolverDecorator extends AbstractValidateIsUserLoggedInForDirectivesTypeResolverDecorator
 {
     public static function getClassesToAttachTo(): array
     {
