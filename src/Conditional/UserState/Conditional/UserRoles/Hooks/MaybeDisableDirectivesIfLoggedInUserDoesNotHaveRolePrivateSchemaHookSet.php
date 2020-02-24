@@ -3,9 +3,9 @@ namespace PoP\TranslateDirective\Conditional\UserState\Conditional\UserRoles\Hoo
 
 use PoP\TranslateDirective\Conditional\UserState\Conditional\UserRoles\ComponentConfiguration;
 use PoP\ComponentModel\TypeResolvers\TypeResolverInterface;
-use PoP\UserRoles\Hooks\AbstractMaybeDisableDirectivesIfLoggedInUserDoesNotHaveRoleHookSet;
+use PoP\UserRoles\Hooks\AbstractMaybeDisableDirectivesIfLoggedInUserDoesNotHaveRolePrivateSchemaHookSet;
 
-class MaybeDisableDirectivesIfLoggedInUserDoesNotHaveRoleHookSet extends AbstractMaybeDisableDirectivesIfLoggedInUserDoesNotHaveRoleHookSet
+class MaybeDisableDirectivesIfLoggedInUserDoesNotHaveRolePrivateSchemaHookSet extends AbstractMaybeDisableDirectivesIfLoggedInUserDoesNotHaveRolePrivateSchemaHookSet
 {
     protected function getRoleName(): ?string
     {

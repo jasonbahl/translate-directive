@@ -5,8 +5,8 @@ use PoP\TranslateDirective\Conditional\UserState\Conditional\UserRoles\Component
 use PoP\API\Environment as APIEnvironment;
 use PoP\ComponentModel\Container\ContainerBuilderUtils;
 use PoP\ComponentModel\AttachableExtensions\AttachableExtensionGroups;
-use PoP\TranslateDirective\Conditional\UserState\Conditional\UserRoles\TypeResolverDecorators\GlobalValidateDoesLoggedInHaveRoleForDirectivesTypeResolverDecorator;
-use PoP\TranslateDirective\Conditional\UserState\Conditional\UserRoles\Hooks\MaybeDisableDirectivesIfLoggedInUserDoesNotHaveRoleHookSet;
+use PoP\TranslateDirective\Conditional\UserState\Conditional\UserRoles\TypeResolverDecorators\GlobalValidateDoesLoggedInHaveRoleForDirectivesPublicSchemaTypeResolverDecorator;
+use PoP\TranslateDirective\Conditional\UserState\Conditional\UserRoles\Hooks\MaybeDisableDirectivesIfLoggedInUserDoesNotHaveRolePrivateSchemaHookSet;
 use PoP\TranslateDirective\Conditional\UserState\Conditional\UserRoles\TypeResolverDecorators\GlobalValidateDoesLoggedInHaveCapabilityForDirectivesTypeResolverDecorator;
 use PoP\TranslateDirective\Conditional\UserState\Conditional\UserRoles\Hooks\MaybeDisableDirectivesIfLoggedInUserDoesNotHaveCapabilityHookSet;
 use PoP\Root\Component\YAMLServicesTrait;
@@ -43,11 +43,8 @@ class ConditionalComponent
     protected static function validateFieldsAndDirectives()
     {
         if (!is_null(ComponentConfiguration::roleLoggedInUserMustHaveToAccessTranslateDirective())) {
-            if (APIEnvironment::usePrivateSchemaMode()) {
-                ContainerBuilderUtils::instantiateService(MaybeDisableDirectivesIfLoggedInUserDoesNotHaveRoleHookSet::class);
-            } else {
-                GlobalValidateDoesLoggedInHaveRoleForDirectivesTypeResolverDecorator::attach(AttachableExtensionGroups::TYPERESOLVERDECORATORS);
-            }
+            ContainerBuilderUtils::instantiateService(MaybeDisableDirectivesIfLoggedInUserDoesNotHaveRolePrivateSchemaHookSet::class);
+            GlobalValidateDoesLoggedInHaveRoleForDirectivesPublicSchemaTypeResolverDecorator::attach(AttachableExtensionGroups::TYPERESOLVERDECORATORS);
         }
         if (!is_null(ComponentConfiguration::capabilityLoggedInUserMustHaveToAccessTranslateDirective())) {
             if (APIEnvironment::usePrivateSchemaMode()) {
