@@ -34,7 +34,7 @@ class ConditionalComponent
     public static function boot()
     {
         // Initialize classes
-        self::attachDynamicHooks();
+        self::validateFieldsAndDirectives();
 
         if (class_exists('\PoP\UserRoles\Component')) {
             \PoP\TranslateDirective\Conditional\UserState\Conditional\UserRoles\ConditionalComponent::boot();
@@ -46,7 +46,7 @@ class ConditionalComponent
      *
      * @return void
      */
-    protected static function attachDynamicHooks()
+    protected static function validateFieldsAndDirectives()
     {
         if (ComponentConfiguration::userMustBeLoggedInToAccessTranslateDirective()) {
             if (APIEnvironment::usePrivateSchemaMode()) {

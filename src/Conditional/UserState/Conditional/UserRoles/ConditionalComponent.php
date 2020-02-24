@@ -32,7 +32,7 @@ class ConditionalComponent
     public static function boot()
     {
         // Initialize classes
-        self::attachDynamicHooks();
+        self::validateFieldsAndDirectives();
     }
 
     /**
@@ -40,7 +40,7 @@ class ConditionalComponent
      *
      * @return void
      */
-    protected static function attachDynamicHooks()
+    protected static function validateFieldsAndDirectives()
     {
         if (!is_null(ComponentConfiguration::roleLoggedInUserMustHaveToAccessTranslateDirective())) {
             if (APIEnvironment::usePrivateSchemaMode()) {
