@@ -7,8 +7,8 @@ use PoP\API\Environment as APIEnvironment;
 use PoP\ComponentModel\Container\ContainerBuilderUtils;
 use PoP\ComponentModel\AttachableExtensions\AttachableExtensionGroups;
 use PoP\TranslateDirective\Conditional\UserState\ComponentConfiguration;
-use PoP\TranslateDirective\Conditional\UserState\Hooks\MaybeDisableDirectivesIfUserNotLoggedInHookSet;
-use PoP\TranslateDirective\Conditional\UserState\TypeResolverDecorators\GlobalValidateIsUserLoggedInForDirectivesTypeResolverDecorator;
+use PoP\TranslateDirective\Conditional\UserState\Hooks\MaybeDisableDirectivesIfUserNotLoggedInPrivateSchemaHookSet;
+use PoP\TranslateDirective\Conditional\UserState\TypeResolverDecorators\GlobalValidateIsUserLoggedInForDirectivesPublicSchemaTypeResolverDecorator;
 
 /**
  * Initialize component
@@ -49,11 +49,8 @@ class ConditionalComponent
     protected static function validateFieldsAndDirectives()
     {
         if (ComponentConfiguration::userMustBeLoggedInToAccessTranslateDirective()) {
-            if (APIEnvironment::usePrivateSchemaMode()) {
-                ContainerBuilderUtils::instantiateService(MaybeDisableDirectivesIfUserNotLoggedInHookSet::class);
-            } else {
-                GlobalValidateIsUserLoggedInForDirectivesTypeResolverDecorator::attach(AttachableExtensionGroups::TYPERESOLVERDECORATORS);
-            }
+            ContainerBuilderUtils::instantiateService(MaybeDisableDirectivesIfUserNotLoggedInPrivateSchemaHookSet::class);
+            GlobalValidateIsUserLoggedInForDirectivesPublicSchemaTypeResolverDecorator::attach(AttachableExtensionGroups::TYPERESOLVERDECORATORS);
         }
     }
 }

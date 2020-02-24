@@ -2,9 +2,9 @@
 namespace PoP\TranslateDirective\Conditional\UserState\Hooks;
 
 use PoP\ComponentModel\TypeResolvers\TypeResolverInterface;
-use PoP\UserState\Hooks\AbstractMaybeDisableDirectivesIfUserNotLoggedInHookSet;
+use PoP\UserState\Hooks\AbstractMaybeDisableDirectivesIfUserNotLoggedInPrivateSchemaHookSet;
 
-class MaybeDisableDirectivesIfUserNotLoggedInHookSet extends AbstractMaybeDisableDirectivesIfUserNotLoggedInHookSet
+class MaybeDisableDirectivesIfUserNotLoggedInPrivateSchemaHookSet extends AbstractMaybeDisableDirectivesIfUserNotLoggedInPrivateSchemaHookSet
 {
     /**
      * Remove directiveName "translate" if the user is not logged in
