@@ -35,8 +35,5 @@ class Component extends AbstractComponent
         if (class_exists('\PoP\UserState\Component')) {
             \PoP\TranslateDirective\Conditional\UserState\ComponentBoot::boot();
         }
-        if (class_exists('\PoP\UserRoles\Component')) {
-            \PoP\TranslateDirective\Conditional\UserRoles\ComponentBoot::boot();
-        }
     }
 }

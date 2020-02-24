@@ -1,7 +1,7 @@
 <?php
 namespace PoP\TranslateDirective\Conditional\UserState;
 
-use PoP\TranslateDirective\Environment;
+use PoP\TranslateDirective\Conditional\UserState\Environment;
 use PoP\API\Environment as APIEnvironment;
 use PoP\ComponentModel\Container\ContainerBuilderUtils;
 use PoP\ComponentModel\AttachableExtensions\AttachableExtensionGroups;
@@ -22,6 +22,10 @@ class ComponentBoot
     {
         // Initialize classes
         self::attachDynamicHooks();
+
+        if (class_exists('\PoP\UserRoles\Component')) {
+            \PoP\TranslateDirective\Conditional\UserState\Conditional\UserRoles\ComponentBoot::boot();
+        }
     }
 
     /**
@@ -31,7 +35,7 @@ class ComponentBoot
      */
     protected static function attachDynamicHooks()
     {
-        if (Environment::userMustBeLoggedInToTranslate()) {
+        if (Environment::userMustBeLoggedInToAccessTranslateDirective()) {
             if (APIEnvironment::usePrivateSchemaMode()) {
                 ContainerBuilderUtils::instantiateService(MaybeDisableDirectivesIfUserNotLoggedInHookSet::class);
             } else {

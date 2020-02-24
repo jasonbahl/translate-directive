@@ -1,7 +1,7 @@
 <?php
-namespace PoP\TranslateDirective\Conditional\UserRoles\TypeResolverDecorators;
+namespace PoP\TranslateDirective\Conditional\UserState\Conditional\UserRoles\TypeResolverDecorators;
 
-use PoP\TranslateDirective\Environment;
+use PoP\TranslateDirective\Conditional\UserState\Conditional\UserRoles\Environment;
 use PoP\ComponentModel\TypeResolvers\AbstractTypeResolver;
 use PoP\UserRoles\Conditional\UserState\TypeResolverDecorators\AbstractValidateDoesLoggedInHaveRoleForDirectivesTypeResolverDecorator;
 
@@ -16,7 +16,7 @@ class GlobalValidateDoesLoggedInHaveRoleForDirectivesTypeResolverDecorator exten
 
     protected function getRoleName(): ?string
     {
-        return Environment::roleUserMustHaveToTranslate();
+        return Environment::roleLoggedInUserMustHaveToAccessTranslateDirective();
     }
 
     protected function getDirectiveNames(): array

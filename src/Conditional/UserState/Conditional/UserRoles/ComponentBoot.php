@@ -1,12 +1,12 @@
 <?php
-namespace PoP\TranslateDirective\Conditional\UserRoles;
+namespace PoP\TranslateDirective\Conditional\UserState\Conditional\UserRoles;
 
-use PoP\TranslateDirective\Environment;
+use PoP\TranslateDirective\Conditional\UserState\Conditional\UserRoles\Environment;
 use PoP\API\Environment as APIEnvironment;
 use PoP\ComponentModel\Container\ContainerBuilderUtils;
 use PoP\ComponentModel\AttachableExtensions\AttachableExtensionGroups;
-use PoP\TranslateDirective\Conditional\UserRoles\TypeResolverDecorators\GlobalValidateDoesLoggedInHaveRoleForDirectivesTypeResolverDecorator;
-use PoP\TranslateDirective\Conditional\UserRoles\Hooks\MaybeDisableDirectivesIfLoggedInUserDoesNotHaveRoleHookSet;
+use PoP\TranslateDirective\Conditional\UserState\Conditional\UserRoles\TypeResolverDecorators\GlobalValidateDoesLoggedInHaveRoleForDirectivesTypeResolverDecorator;
+use PoP\TranslateDirective\Conditional\UserState\Conditional\UserRoles\Hooks\MaybeDisableDirectivesIfLoggedInUserDoesNotHaveRoleHookSet;
 
 /**
  * Initialize component
@@ -31,7 +31,7 @@ class ComponentBoot
      */
     protected static function attachDynamicHooks()
     {
-        if (!is_null(Environment::roleUserMustHaveToTranslate())) {
+        if (!is_null(Environment::roleLoggedInUserMustHaveToAccessTranslateDirective())) {
             if (APIEnvironment::usePrivateSchemaMode()) {
                 ContainerBuilderUtils::instantiateService(MaybeDisableDirectivesIfLoggedInUserDoesNotHaveRoleHookSet::class);
             } else {

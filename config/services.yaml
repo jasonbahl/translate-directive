@@ -16,10 +16,10 @@ services:
         resource: '../src/Conditional/UserState/TypeResolverDecorators/*'
         public: true
 
-    PoP\TranslateDirective\Conditional\UserRoles\Hooks\:
-        resource: '../src/Conditional/UserRoles/Hooks/*'
+    PoP\TranslateDirective\Conditional\UserState\Conditional\UserRoles\Hooks\:
+        resource: '../src/Conditional/UserState/Conditional/UserRoles/Hooks/*'
         public: true
 
-    PoP\TranslateDirective\Conditional\UserRoles\TypeResolverDecorators\:
-        resource: '../src/Conditional/UserRoles/TypeResolverDecorators/*'
+    PoP\TranslateDirective\Conditional\UserState\Conditional\UserRoles\TypeResolverDecorators\:
+        resource: '../src/Conditional/UserState/Conditional/UserRoles/TypeResolverDecorators/*'
         public: true
