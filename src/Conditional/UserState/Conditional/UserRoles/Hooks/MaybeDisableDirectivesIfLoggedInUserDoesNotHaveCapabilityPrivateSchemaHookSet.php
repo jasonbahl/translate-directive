@@ -21,10 +21,10 @@ class MaybeDisableDirectivesIfLoggedInUserDoesNotHaveCapabilityPrivateSchemaHook
      * @param string $directiveName
      * @return boolean
      */
-    protected function getDirectiveNames(): array
+    protected function getDirectiveResolverClasses(): array
     {
         return [
-            AbstractTranslateDirectiveResolver::getDirectiveName(),
+            AbstractTranslateDirectiveResolver::class,
         ];
     }
 }

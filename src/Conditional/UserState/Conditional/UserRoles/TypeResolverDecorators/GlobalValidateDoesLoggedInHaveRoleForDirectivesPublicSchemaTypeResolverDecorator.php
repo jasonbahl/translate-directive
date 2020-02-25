@@ -20,10 +20,10 @@ class GlobalValidateDoesLoggedInHaveRoleForDirectivesPublicSchemaTypeResolverDec
         return ComponentConfiguration::roleLoggedInUserMustHaveToAccessTranslateDirective();
     }
 
-    protected function getDirectiveNames(): array
+    protected function getDirectiveResolverClasses(): array
     {
         return [
-            AbstractTranslateDirectiveResolver::getDirectiveName(),
+            AbstractTranslateDirectiveResolver::class,
         ];
     }
 }

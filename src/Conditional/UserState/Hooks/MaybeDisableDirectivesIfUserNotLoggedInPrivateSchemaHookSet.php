@@ -15,10 +15,10 @@ class MaybeDisableDirectivesIfUserNotLoggedInPrivateSchemaHookSet extends Abstra
      * @param string $directiveName
      * @return boolean
      */
-    protected function getDirectiveNames(): array
+    protected function getDirectiveResolverClasses(): array
     {
         return [
-            AbstractTranslateDirectiveResolver::getDirectiveName(),
+            AbstractTranslateDirectiveResolver::class,
         ];
     }
 }
