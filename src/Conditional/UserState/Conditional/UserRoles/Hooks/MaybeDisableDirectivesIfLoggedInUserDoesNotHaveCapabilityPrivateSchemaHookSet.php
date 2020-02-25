@@ -1,8 +1,9 @@
 <?php
 namespace PoP\TranslateDirective\Conditional\UserState\Conditional\UserRoles\Hooks;
 
-use PoP\TranslateDirective\Conditional\UserState\Conditional\UserRoles\ComponentConfiguration;
 use PoP\ComponentModel\TypeResolvers\TypeResolverInterface;
+use PoP\TranslateDirective\DirectiveResolvers\AbstractTranslateDirectiveResolver;
+use PoP\TranslateDirective\Conditional\UserState\Conditional\UserRoles\ComponentConfiguration;
 use PoP\UserRoles\Hooks\AbstractMaybeDisableDirectivesIfLoggedInUserDoesNotHaveCapabilityPrivateSchemaHookSet;
 
 class MaybeDisableDirectivesIfLoggedInUserDoesNotHaveCapabilityPrivateSchemaHookSet extends AbstractMaybeDisableDirectivesIfLoggedInUserDoesNotHaveCapabilityPrivateSchemaHookSet
@@ -23,7 +24,7 @@ class MaybeDisableDirectivesIfLoggedInUserDoesNotHaveCapabilityPrivateSchemaHook
     protected function getDirectiveNames(): array
     {
         return [
-            'translate',
+            AbstractTranslateDirectiveResolver::getDirectiveName(),
         ];
     }
 }

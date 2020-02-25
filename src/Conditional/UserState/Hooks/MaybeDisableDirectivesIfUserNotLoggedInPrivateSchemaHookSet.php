@@ -2,6 +2,7 @@
 namespace PoP\TranslateDirective\Conditional\UserState\Hooks;
 
 use PoP\ComponentModel\TypeResolvers\TypeResolverInterface;
+use PoP\TranslateDirective\DirectiveResolvers\AbstractTranslateDirectiveResolver;
 use PoP\UserState\Hooks\AbstractMaybeDisableDirectivesIfUserNotLoggedInPrivateSchemaHookSet;
 
 class MaybeDisableDirectivesIfUserNotLoggedInPrivateSchemaHookSet extends AbstractMaybeDisableDirectivesIfUserNotLoggedInPrivateSchemaHookSet
@@ -17,7 +18,7 @@ class MaybeDisableDirectivesIfUserNotLoggedInPrivateSchemaHookSet extends Abstra
     protected function getDirectiveNames(): array
     {
         return [
-            'translate',
+            AbstractTranslateDirectiveResolver::getDirectiveName(),
         ];
     }
 }
