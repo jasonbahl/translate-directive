@@ -8,9 +8,12 @@ use PoP\UserRoles\Hooks\AbstractMaybeDisableDirectivesIfLoggedInUserDoesNotHaveC
 
 class MaybeDisableDirectivesIfLoggedInUserDoesNotHaveCapabilityPrivateSchemaHookSet extends AbstractMaybeDisableDirectivesIfLoggedInUserDoesNotHaveCapabilityPrivateSchemaHookSet
 {
-    protected function getCapability(): ?string
+    protected function getCapabilities(): array
     {
-        return ComponentConfiguration::capabilityLoggedInUserMustHaveToAccessTranslateDirective();
+        if ($capability = ComponentConfiguration::capabilityLoggedInUserMustHaveToAccessTranslateDirective()) {
+            return [$capability];
+        }
+        return [];
     }
 
     /**

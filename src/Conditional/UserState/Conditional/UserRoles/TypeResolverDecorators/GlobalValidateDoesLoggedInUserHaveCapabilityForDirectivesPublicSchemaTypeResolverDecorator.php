@@ -15,9 +15,12 @@ class GlobalValidateDoesLoggedInUserHaveCapabilityForDirectivesPublicSchemaTypeR
         );
     }
 
-    protected function getCapability(): ?string
+    protected function getCapabilities(): array
     {
-        return ComponentConfiguration::capabilityLoggedInUserMustHaveToAccessTranslateDirective();
+        if ($capability = ComponentConfiguration::capabilityLoggedInUserMustHaveToAccessTranslateDirective()) {
+            return [$capability];
+        }
+        return [];
     }
 
     protected function getDirectiveResolverClasses(): array
