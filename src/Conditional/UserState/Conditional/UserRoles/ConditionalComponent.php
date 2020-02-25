@@ -4,9 +4,9 @@ namespace PoP\TranslateDirective\Conditional\UserState\Conditional\UserRoles;
 use PoP\TranslateDirective\Conditional\UserState\Conditional\UserRoles\ComponentConfiguration;
 use PoP\ComponentModel\Container\ContainerBuilderUtils;
 use PoP\ComponentModel\AttachableExtensions\AttachableExtensionGroups;
-use PoP\TranslateDirective\Conditional\UserState\Conditional\UserRoles\TypeResolverDecorators\GlobalValidateDoesLoggedInHaveRoleForDirectivesPublicSchemaTypeResolverDecorator;
+use PoP\TranslateDirective\Conditional\UserState\Conditional\UserRoles\TypeResolverDecorators\GlobalValidateDoesLoggedInUserHaveRoleForDirectivesPublicSchemaTypeResolverDecorator;
 use PoP\TranslateDirective\Conditional\UserState\Conditional\UserRoles\Hooks\MaybeDisableDirectivesIfLoggedInUserDoesNotHaveRolePrivateSchemaHookSet;
-use PoP\TranslateDirective\Conditional\UserState\Conditional\UserRoles\TypeResolverDecorators\GlobalValidateDoesLoggedInHaveCapabilityForDirectivesPublicSchemaTypeResolverDecorator;
+use PoP\TranslateDirective\Conditional\UserState\Conditional\UserRoles\TypeResolverDecorators\GlobalValidateDoesLoggedInUserHaveCapabilityForDirectivesPublicSchemaTypeResolverDecorator;
 use PoP\TranslateDirective\Conditional\UserState\Conditional\UserRoles\Hooks\MaybeDisableDirectivesIfLoggedInUserDoesNotHaveCapabilityPrivateSchemaHookSet;
 use PoP\Root\Component\YAMLServicesTrait;
 use PoP\TranslateDirective\Component;
@@ -43,11 +43,11 @@ class ConditionalComponent
     {
         if (!is_null(ComponentConfiguration::roleLoggedInUserMustHaveToAccessTranslateDirective())) {
             ContainerBuilderUtils::instantiateService(MaybeDisableDirectivesIfLoggedInUserDoesNotHaveRolePrivateSchemaHookSet::class);
-            GlobalValidateDoesLoggedInHaveRoleForDirectivesPublicSchemaTypeResolverDecorator::attach(AttachableExtensionGroups::TYPERESOLVERDECORATORS);
+            GlobalValidateDoesLoggedInUserHaveRoleForDirectivesPublicSchemaTypeResolverDecorator::attach(AttachableExtensionGroups::TYPERESOLVERDECORATORS);
         }
         if (!is_null(ComponentConfiguration::capabilityLoggedInUserMustHaveToAccessTranslateDirective())) {
             ContainerBuilderUtils::instantiateService(MaybeDisableDirectivesIfLoggedInUserDoesNotHaveCapabilityPrivateSchemaHookSet::class);
-            GlobalValidateDoesLoggedInHaveCapabilityForDirectivesPublicSchemaTypeResolverDecorator::attach(AttachableExtensionGroups::TYPERESOLVERDECORATORS);
+            GlobalValidateDoesLoggedInUserHaveCapabilityForDirectivesPublicSchemaTypeResolverDecorator::attach(AttachableExtensionGroups::TYPERESOLVERDECORATORS);
         }
     }
 }

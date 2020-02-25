@@ -4,9 +4,9 @@ namespace PoP\TranslateDirective\Conditional\UserState\Conditional\UserRoles\Typ
 use PoP\ComponentModel\TypeResolvers\AbstractTypeResolver;
 use PoP\TranslateDirective\DirectiveResolvers\AbstractTranslateDirectiveResolver;
 use PoP\TranslateDirective\Conditional\UserState\Conditional\UserRoles\ComponentConfiguration;
-use PoP\UserRoles\Conditional\UserState\TypeResolverDecorators\AbstractValidateDoesLoggedInHaveCapabilityForDirectivesPublicSchemaTypeResolverDecorator;
+use PoP\UserRoles\Conditional\UserState\TypeResolverDecorators\AbstractValidateDoesLoggedInUserHaveRoleForDirectivesPublicSchemaTypeResolverDecorator;
 
-class GlobalValidateDoesLoggedInHaveCapabilityForDirectivesPublicSchemaTypeResolverDecorator extends AbstractValidateDoesLoggedInHaveCapabilityForDirectivesPublicSchemaTypeResolverDecorator
+class GlobalValidateDoesLoggedInUserHaveRoleForDirectivesPublicSchemaTypeResolverDecorator extends AbstractValidateDoesLoggedInUserHaveRoleForDirectivesPublicSchemaTypeResolverDecorator
 {
     public static function getClassesToAttachTo(): array
     {
@@ -15,9 +15,9 @@ class GlobalValidateDoesLoggedInHaveCapabilityForDirectivesPublicSchemaTypeResol
         );
     }
 
-    protected function getCapability(): ?string
+    protected function getRoleName(): ?string
     {
-        return ComponentConfiguration::capabilityLoggedInUserMustHaveToAccessTranslateDirective();
+        return ComponentConfiguration::roleLoggedInUserMustHaveToAccessTranslateDirective();
     }
 
     protected function getDirectiveResolverClasses(): array
