@@ -8,9 +8,12 @@ use PoP\UserRoles\Hooks\AbstractMaybeDisableDirectivesIfLoggedInUserDoesNotHaveR
 
 class MaybeDisableDirectivesIfLoggedInUserDoesNotHaveRolePrivateSchemaHookSet extends AbstractMaybeDisableDirectivesIfLoggedInUserDoesNotHaveRolePrivateSchemaHookSet
 {
-    protected function getRoleName(): ?string
+    protected function getRoleNames(): array
     {
-        return ComponentConfiguration::roleLoggedInUserMustHaveToAccessTranslateDirective();
+        if ($roleName = ComponentConfiguration::roleLoggedInUserMustHaveToAccessTranslateDirective()) {
+            return [$roleName];
+        }
+        return [];
     }
 
     /**

@@ -15,9 +15,12 @@ class GlobalValidateDoesLoggedInUserHaveRoleForDirectivesPublicSchemaTypeResolve
         );
     }
 
-    protected function getRoleName(): ?string
+    protected function getRoleNames(): array
     {
-        return ComponentConfiguration::roleLoggedInUserMustHaveToAccessTranslateDirective();
+        if ($roleName = ComponentConfiguration::roleLoggedInUserMustHaveToAccessTranslateDirective()) {
+            return [$roleName];
+        }
+        return [];
     }
 
     protected function getDirectiveResolverClasses(): array
