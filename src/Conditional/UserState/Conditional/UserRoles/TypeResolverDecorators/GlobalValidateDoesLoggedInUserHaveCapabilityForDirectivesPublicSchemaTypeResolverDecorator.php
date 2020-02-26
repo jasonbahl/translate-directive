@@ -7,7 +7,7 @@ use PoP\UserRolesAccessControl\TypeResolverDecorators\ValidateDoesLoggedInUserHa
 
 class GlobalValidateDoesLoggedInUserHaveCapabilityForDirectivesPublicSchemaTypeResolverDecorator extends ValidateDoesLoggedInUserHaveCapabilityForDirectivesPublicSchemaTypeResolverDecorator
 {
-    protected static function getConfiguredEntryList(): array
+    protected function getConfiguredEntryList(): array
     {
         if ($capability = ComponentConfiguration::capabilityLoggedInUserMustHaveToAccessTranslateDirective()) {
             return [[AbstractTranslateDirectiveResolver::class, $capability]];
