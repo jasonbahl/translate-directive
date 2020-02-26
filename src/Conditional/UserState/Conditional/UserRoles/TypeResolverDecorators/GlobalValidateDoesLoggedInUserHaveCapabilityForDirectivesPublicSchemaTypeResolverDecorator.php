@@ -1,32 +1,17 @@
 <?php
 namespace PoP\TranslateDirective\Conditional\UserState\Conditional\UserRoles\TypeResolverDecorators;
 
-use PoP\ComponentModel\TypeResolvers\AbstractTypeResolver;
 use PoP\TranslateDirective\DirectiveResolvers\AbstractTranslateDirectiveResolver;
 use PoP\TranslateDirective\Conditional\UserState\Conditional\UserRoles\ComponentConfiguration;
-use PoP\UserRolesACL\TypeResolverDecorators\AbstractValidateDoesLoggedInUserHaveCapabilityForDirectivesPublicSchemaTypeResolverDecorator;
+use PoP\UserRolesAccessControl\TypeResolverDecorators\ValidateDoesLoggedInUserHaveCapabilityForDirectivesPublicSchemaTypeResolverDecorator;
 
-class GlobalValidateDoesLoggedInUserHaveCapabilityForDirectivesPublicSchemaTypeResolverDecorator extends AbstractValidateDoesLoggedInUserHaveCapabilityForDirectivesPublicSchemaTypeResolverDecorator
+class GlobalValidateDoesLoggedInUserHaveCapabilityForDirectivesPublicSchemaTypeResolverDecorator extends ValidateDoesLoggedInUserHaveCapabilityForDirectivesPublicSchemaTypeResolverDecorator
 {
-    public static function getClassesToAttachTo(): array
-    {
-        return array(
-            AbstractTypeResolver::class,
-        );
-    }
-
-    protected function getCapabilities(): array
+    protected static function getConfiguredEntryList(): array
     {
         if ($capability = ComponentConfiguration::capabilityLoggedInUserMustHaveToAccessTranslateDirective()) {
-            return [$capability];
+            return [[AbstractTranslateDirectiveResolver::class, $capability]];
         }
         return [];
-    }
-
-    protected function getDirectiveResolverClasses(): array
-    {
-        return [
-            AbstractTranslateDirectiveResolver::class,
-        ];
     }
 }
