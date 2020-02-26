@@ -23,23 +23,5 @@ class Component extends AbstractComponent
         self::$COMPONENT_DIR = dirname(__DIR__);
         self::initYAMLServices(self::$COMPONENT_DIR);
         ServiceConfiguration::init();
-
-        if (class_exists('\PoP\UserState\Component')) {
-            \PoP\TranslateDirective\Conditional\UserState\ConditionalComponent::init();
-        }
-    }
-
-    /**
-     * Boot component
-     *
-     * @return void
-     */
-    public static function boot()
-    {
-        parent::boot();
-
-        if (class_exists('\PoP\UserState\Component')) {
-            \PoP\TranslateDirective\Conditional\UserState\ConditionalComponent::boot();
-        }
     }
 }
