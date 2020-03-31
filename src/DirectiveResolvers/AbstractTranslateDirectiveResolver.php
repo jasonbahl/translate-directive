@@ -17,7 +17,8 @@ use PoP\ComponentModel\Feedback\Tokens;
 abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiveResolver
 {
     const DIRECTIVE_NAME = 'translate';
-    public static function getDirectiveName(): string {
+    public static function getDirectiveName(): string
+    {
         return self::DIRECTIVE_NAME;
     }
 
