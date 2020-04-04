@@ -2,7 +2,7 @@
 namespace PoP\TranslateDirective\DirectiveResolvers;
 
 use PoP\ComponentModel\Error;
-use PoP\ComponentModel\GeneralUtils;
+use PoP\ComponentModel\Misc\GeneralUtils;
 use PoP\GuzzleHelpers\GuzzleHelpers;
 use PoP\TranslateDirective\Environment;
 use PoP\Translation\Facades\TranslationAPIFacade;
