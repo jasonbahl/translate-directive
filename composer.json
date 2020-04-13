@@ -19,8 +19,8 @@
     "prefer-stable": true,
     "require": {
         "php" : "~7.1",
-        "getpop/component-model": "^1.0@dev",
-        "getpop/guzzle-helpers": "^1.0@dev"
+        "getpop/component-model": "~0.1",
+        "getpop/guzzle-helpers": "~0.1"
     },
     "require-dev": {
         "phpunit/phpunit" : ">=7.0",
