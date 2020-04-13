@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace PoP\TranslateDirective\Facades;
 
 use PoP\TranslateDirective\Translation\TranslationServiceInterface;

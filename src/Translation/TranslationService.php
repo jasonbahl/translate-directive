@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace PoP\TranslateDirective\Translation;
 
 class TranslationService implements TranslationServiceInterface
