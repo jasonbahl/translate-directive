@@ -27,7 +27,7 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
      *
      * @return array
      */
-    public abstract function getProvidersToResolve(): array;
+    abstract public function getProvidersToResolve(): array;
 
     /**
      * If the provider is indicated through $directiveArgs, use it
@@ -127,7 +127,7 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
             }
 
             if ($oneLanguagePerField) {
-                for ($i=0; $i<count($targetLangs); $i++) {
+                for ($i = 0; $i < count($targetLangs); $i++) {
                     $targetLang = $targetLangs[$i];
                     $field = $dataFields['direct'][$i];
                     if (!isset($counters[$sourceLang][$targetLang])) {
@@ -255,7 +255,7 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
                         // Place it either under the same entry, or adding '-'+langCode
                         $targetFieldOutputKey = $fieldOutputKey;
                         if (!$override) {
-                            $targetFieldOutputKey .= '-'.$targetLang;
+                            $targetFieldOutputKey .= '-' . $targetLang;
                         }
                         $dbItems[$id][$targetFieldOutputKey] = $translations[$position];
                     }
@@ -280,7 +280,7 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
         );
     }
 
-    protected abstract function getEndpoint(string $provider): ?string;
+    abstract protected function getEndpoint(string $provider): ?string;
 
     protected function getQuery(string $provider, string $sourceLang, string $targetLang, array $contents): array
     {
