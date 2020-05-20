@@ -1,2 +1,2 @@
 <?php
-\PoP\TranslateDirective\Component::init();
+//\PoP\TranslateDirective\Component::initialize();
