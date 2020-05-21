@@ -22,6 +22,12 @@ composer require getpop/translate-directive
 
 ## Usage
 
+Initialize the component:
+
+``` php
+\PoP\TranslateDirective\Component::initialize();
+```
+
 Extend from class `AbstractTranslateDirectiveResolver` to implement the translation directive using a specific API provider.
 
 ## Standards
