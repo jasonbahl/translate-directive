@@ -25,7 +25,9 @@ composer require getpop/translate-directive
 Initialize the component:
 
 ``` php
-\PoP\TranslateDirective\Component::initialize();
+\PoP\Root\ComponentLoader::initializeComponents([
+    \PoP\TranslateDirective\Component::class,
+]);
 ```
 
 Extend from class `AbstractTranslateDirectiveResolver` to implement the translation directive using a specific API provider.
