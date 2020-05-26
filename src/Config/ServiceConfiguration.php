@@ -12,7 +12,7 @@ class ServiceConfiguration
 {
     use PHPServiceConfigurationTrait;
 
-    protected static function configure()
+    protected static function configure(): void
     {
         // If there is a default translation provider, inject it into the service
         if ($defaultTranslationProvider = Environment::getDefaultTranslationProvider()) {
