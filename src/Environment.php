@@ -8,7 +8,7 @@ class Environment
 {
     public static function getDefaultTranslationProvider(): ?string
     {
-        return $_ENV['DEFAULT_TRANSLATION_PROVIDER'];
+        return isset($_ENV['DEFAULT_TRANSLATION_PROVIDER']) ? $_ENV['DEFAULT_TRANSLATION_PROVIDER'] : null;
     }
 
     public static function useAsyncForMultiLanguageTranslation(): bool
