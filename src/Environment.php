@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PoP\TranslateDirective;
+namespace PoPSchema\TranslateDirective;
 
 class Environment
 {

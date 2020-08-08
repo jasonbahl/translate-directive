@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PoP\TranslateDirective;
+namespace PoPSchema\TranslateDirective;
 
-use PoP\TranslateDirective\Config\ServiceConfiguration;
+use PoPSchema\TranslateDirective\Config\ServiceConfiguration;
 use PoP\Root\Component\AbstractComponent;
 use PoP\Root\Component\YAMLServicesTrait;
 

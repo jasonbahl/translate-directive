@@ -17,7 +17,7 @@ Directive <translate> to translate content using different provider APIs
 Via Composer
 
 ``` bash
-composer require getpop/translate-directive
+composer require pop-schema/translate-directive
 ```
 
 ## Usage
@@ -26,7 +26,7 @@ Initialize the component:
 
 ``` php
 \PoP\Root\ComponentLoader::initializeComponents([
-    \PoP\TranslateDirective\Component::class,
+    \PoPSchema\TranslateDirective\Component::class,
 ]);
 ```
 
@@ -77,18 +77,18 @@ If you discover any security related issues, please email leo@getpop.org instead
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
 
-[ico-version]: https://img.shields.io/packagist/v/getpop/translate-directive.svg?style=flat-square
+[ico-version]: https://img.shields.io/packagist/v/pop-schema/translate-directive.svg?style=flat-square
 [ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
-[ico-travis]: https://img.shields.io/travis/getpop/translate-directive/master.svg?style=flat-square
-[ico-scrutinizer]: https://img.shields.io/scrutinizer/coverage/g/getpop/translate-directive.svg?style=flat-square
-[ico-code-quality]: https://img.shields.io/scrutinizer/g/getpop/translate-directive.svg?style=flat-square
-[ico-downloads]: https://img.shields.io/packagist/dt/getpop/translate-directive.svg?style=flat-square
+[ico-travis]: https://img.shields.io/travis/pop-schema/translate-directive/master.svg?style=flat-square
+[ico-scrutinizer]: https://img.shields.io/scrutinizer/coverage/g/pop-schema/translate-directive.svg?style=flat-square
+[ico-code-quality]: https://img.shields.io/scrutinizer/g/pop-schema/translate-directive.svg?style=flat-square
+[ico-downloads]: https://img.shields.io/packagist/dt/pop-schema/translate-directive.svg?style=flat-square
 
-[link-packagist]: https://packagist.org/packages/getpop/translate-directive
-[link-travis]: https://travis-ci.org/getpop/translate-directive
-[link-scrutinizer]: https://scrutinizer-ci.com/g/getpop/translate-directive/code-structure
-[link-code-quality]: https://scrutinizer-ci.com/g/getpop/translate-directive
-[link-downloads]: https://packagist.org/packages/getpop/translate-directive
+[link-packagist]: https://packagist.org/packages/pop-schema/translate-directive
+[link-travis]: https://travis-ci.org/pop-schema/translate-directive
+[link-scrutinizer]: https://scrutinizer-ci.com/g/pop-schema/translate-directive/code-structure
+[link-code-quality]: https://scrutinizer-ci.com/g/pop-schema/translate-directive
+[link-downloads]: https://packagist.org/packages/pop-schema/translate-directive
 [link-author]: https://github.com/leoloso
 [link-contributors]: ../../contributors
 

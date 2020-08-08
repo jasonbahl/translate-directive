@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PoP\TranslateDirective\Translation;
+namespace PoPSchema\TranslateDirective\Translation;
 
 interface TranslationServiceInterface
 {

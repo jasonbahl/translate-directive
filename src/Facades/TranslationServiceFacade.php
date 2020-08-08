@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PoP\TranslateDirective\Facades;
+namespace PoPSchema\TranslateDirective\Facades;
 
-use PoP\TranslateDirective\Translation\TranslationServiceInterface;
+use PoPSchema\TranslateDirective\Translation\TranslationServiceInterface;
 use PoP\Root\Container\ContainerBuilderFactory;
 
 class TranslationServiceFacade

@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace PoP\TranslateDirective\DirectiveResolvers;
+namespace PoPSchema\TranslateDirective\DirectiveResolvers;
 
 use PoP\ComponentModel\Error;
 use PoP\ComponentModel\Misc\GeneralUtils;
 use PoP\GuzzleHelpers\GuzzleHelpers;
-use PoP\TranslateDirective\Environment;
+use PoPSchema\TranslateDirective\Environment;
 use PoP\Translation\Facades\TranslationAPIFacade;
-use PoP\TranslateDirective\Schema\SchemaDefinition;
-use PoP\TranslateDirective\Facades\TranslationServiceFacade;
+use PoPSchema\TranslateDirective\Schema\SchemaDefinition;
+use PoPSchema\TranslateDirective\Facades\TranslationServiceFacade;
 use PoP\ComponentModel\TypeResolvers\TypeResolverInterface;
 use PoP\ComponentModel\Environment as ComponentModelEnvironment;
 use PoP\ComponentModel\Facades\Schema\FieldQueryInterpreterFacade;

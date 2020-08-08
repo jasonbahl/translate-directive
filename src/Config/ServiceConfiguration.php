@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PoP\TranslateDirective\Config;
+namespace PoPSchema\TranslateDirective\Config;
 
-use PoP\TranslateDirective\Environment;
+use PoPSchema\TranslateDirective\Environment;
 use PoP\Root\Component\PHPServiceConfigurationTrait;
 use PoP\ComponentModel\Container\ContainerBuilderUtils;
 

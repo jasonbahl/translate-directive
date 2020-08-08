@@ -1,5 +1,5 @@
 {
-    "name": "getpop/translate-directive",
+    "name": "pop-schema/translate-directive",
     "type": "library",
     "description": "Directive <translate> to translate content using different provider APIs",
     "keywords": [
@@ -29,12 +29,12 @@
     },
     "autoload": {
         "psr-4": {
-            "PoP\\TranslateDirective\\": "src"
+            "PoPSchema\\TranslateDirective\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "PoP\\TranslateDirective\\": "tests"
+            "PoPSchema\\TranslateDirective\\": "tests"
         }
     },
     "scripts": {
