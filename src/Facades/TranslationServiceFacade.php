@@ -11,6 +11,10 @@ class TranslationServiceFacade
 {
     public static function getInstance(): TranslationServiceInterface
     {
-        return ContainerBuilderFactory::getInstance()->get('translation_service');
+        /**
+         * @var TranslationServiceInterface
+         */
+        $service = ContainerBuilderFactory::getInstance()->get('translation_service');
+        return $service;
     }
 }
