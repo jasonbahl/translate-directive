@@ -7,6 +7,7 @@ namespace PoPSchema\TranslateDirective\Config;
 use PoPSchema\TranslateDirective\Environment;
 use PoP\Root\Component\PHPServiceConfigurationTrait;
 use PoP\ComponentModel\Container\ContainerBuilderUtils;
+use PoPSchema\TranslateDirective\Translation\TranslationServiceInterface;
 
 class ServiceConfiguration
 {
@@ -17,7 +18,7 @@ class ServiceConfiguration
         // If there is a default translation provider, inject it into the service
         if ($defaultTranslationProvider = Environment::getDefaultTranslationProvider()) {
             ContainerBuilderUtils::injectValuesIntoService(
-                'translation_service',
+                TranslationServiceInterface::class,
                 'setDefaultProvider',
                 $defaultTranslationProvider
             );

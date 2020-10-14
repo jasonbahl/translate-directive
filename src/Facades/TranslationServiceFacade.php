@@ -14,7 +14,7 @@ class TranslationServiceFacade
         /**
          * @var TranslationServiceInterface
          */
-        $service = ContainerBuilderFactory::getInstance()->get('translation_service');
+        $service = ContainerBuilderFactory::getInstance()->get(TranslationServiceInterface::class);
         return $service;
     }
 }
