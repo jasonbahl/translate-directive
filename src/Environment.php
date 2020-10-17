@@ -8,11 +8,11 @@ class Environment
 {
     public static function getDefaultTranslationProvider(): ?string
     {
-        return isset($_ENV['DEFAULT_TRANSLATION_PROVIDER']) ? $_ENV['DEFAULT_TRANSLATION_PROVIDER'] : null;
+        return getenv('DEFAULT_TRANSLATION_PROVIDER') !== false ? getenv('DEFAULT_TRANSLATION_PROVIDER') : null;
     }
 
     public static function useAsyncForMultiLanguageTranslation(): bool
     {
-        return isset($_ENV['USE_ASYNC_FOR_MULTILANGUAGE_TRANSLATION']) ? strtolower($_ENV['USE_ASYNC_FOR_MULTILANGUAGE_TRANSLATION']) == "true" : true;
+        return getenv('USE_ASYNC_FOR_MULTILANGUAGE_TRANSLATION') !== false ? strtolower(getenv('USE_ASYNC_FOR_MULTILANGUAGE_TRANSLATION')) == "true" : true;
     }
 }
