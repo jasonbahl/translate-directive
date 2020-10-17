@@ -6,7 +6,7 @@ namespace PoPSchema\TranslateDirective\Translation;
 
 class TranslationService implements TranslationServiceInterface
 {
-    protected ?string $defaultProvider;
+    protected ?string $defaultProvider = null;
 
     public function getDefaultProvider(): ?string
     {
