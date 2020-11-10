@@ -34,7 +34,9 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
 
     /**
      * If the provider is indicated through $directiveArgs, use it
-     * Otherwise, use the default one, if set
+     * Otherwise, use the default one, if set.
+     * Using this function because `resolveCanProcess` doesn't get the default value,
+     * i.e. when arg "provider" is not provided in the query
      *
      * @param array $directiveArgs
      * @return void
@@ -146,7 +148,7 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
                 $override = false;
             } else {
                 // For one language, get value from arg, or true by default
-                $override = $this->directiveArgsForSchema['override'] ?? true;
+                $override = $this->directiveArgsForSchema['override'];
             }
 
             if ($oneLanguagePerField) {
