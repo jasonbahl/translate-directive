@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PoPSchema\TranslateDirective\DirectiveResolvers;
 
-use PoP\ComponentModel\Error;
+use PoP\ComponentModel\ErrorHandling\Error;
 use PoP\ComponentModel\Misc\GeneralUtils;
 use PoP\GuzzleHelpers\GuzzleHelpers;
 use PoPSchema\TranslateDirective\Environment;
