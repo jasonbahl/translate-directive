@@ -159,7 +159,7 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
                         $counters[$sourceLang][$targetLang] = 0;
                     }
                     // Get the fieldOutputKey from the cache, or calculate it
-                    if (is_null($fieldOutputKeyCache[$field])) {
+                    if (!isset($fieldOutputKeyCache[$field])) {
                         $fieldOutputKeyCache[$field] = $fieldQueryInterpreter->getFieldOutputKey($field);
                     }
                     $fieldOutputKey = $fieldOutputKeyCache[$field];
@@ -175,7 +175,7 @@ abstract class AbstractTranslateDirectiveResolver extends AbstractSchemaDirectiv
                     }
                     foreach ($dataFields['direct'] as $field) {
                         // Get the fieldOutputKey from the cache, or calculate it
-                        if (is_null($fieldOutputKeyCache[$field])) {
+                        if (!isset($fieldOutputKeyCache[$field])) {
                             $fieldOutputKeyCache[$field] = $fieldQueryInterpreter->getFieldOutputKey($field);
                         }
                         $fieldOutputKey = $fieldOutputKeyCache[$field];
